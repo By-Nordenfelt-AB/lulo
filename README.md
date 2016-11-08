@@ -1,7 +1,7 @@
 # lulo
 
 lulo is a tiny plugin based framework for working with AWS CloudFormation Custom Resources.
-lolu itself doesn't do much but is easily extended by registering plugins.
+lulo itself doesn't do much but is easily extended by registering plugins.
 
 ## Installation
 ```
