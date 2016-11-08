@@ -24,7 +24,7 @@ exports.handler = function (event, context, callback) {
 ```
 (Yes, that is all the nodejs code you have to write)
 
-Package your index.js and node_modules and deploy to Lambda.
+Package your index.js and node_modules and deploy to Lambda (NodeJs4.3 runtime).
 
 ### AWS CloudFormation template
 ```javascript
@@ -88,6 +88,8 @@ If you need to namespace return values from a plugin, use dot.notation in the ob
 
 If you want to set the PhysicalResourceId of the CustomResource, set
 `response.physicalResourceId` to the value you want.
+
+Your plugins are expected to run on the `NodeJS4.3` Lambda runtime.
 
 #### Document permissions
 Remember to document any additional IAM permissions your plugin requires.
