@@ -13,7 +13,7 @@ var SUCCESS = 'SUCCESS';
 var FAILED = 'FAILED';
 
 /* eslint max-params: 0 */
-exports = function (error, response, event, context, callback) {
+exports = function (error, response, event, context, logResponse, callback) {
     var responseStatus = SUCCESS;
     var responseData;
     var responseReason;
@@ -50,6 +50,10 @@ exports = function (error, response, event, context, callback) {
             'content-length': requestBody.length
         }
     };
+
+    if (logResponse) {
+        logger.log('Response', requestBody);
+    }
 
     var request = https.request(options, function (httpResponse) {
         logger.log('Status code: ' + httpResponse.statusCode);

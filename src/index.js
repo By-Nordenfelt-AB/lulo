@@ -12,6 +12,7 @@ function Lulo(options) {
     }
 
     this.logEvents = options.logEvents;
+    this.logResponse = options.logResponse;
     this.maskedProperties = options.maskedProperties || [];
     this.plugins = {};
 }
@@ -30,6 +31,7 @@ Lulo.prototype.register = function (resourceName, resource) {
 
 /* eslint global-require: 0 */
 Lulo.prototype.handler = function (event, context, callback) {
+    var logResponse = this.logResponse;
     if (this.logEvents) {
         logger.logEvent(event, this.maskedProperties);
     }
@@ -61,6 +63,6 @@ Lulo.prototype.handler = function (event, context, callback) {
     }
 
     function cfnResponse(error, responseData) {
-        response(error, responseData, event, context, callback);
+        response(error, responseData, event, context, logResponse, callback);
     }
 };

@@ -103,7 +103,7 @@ describe('Index unit tests', function () {
                     expect(logEventStub.calledOnce).to.equal(true);
                     expect(responseStub.calledOnce).to.equal(true);
                     expect(responseStub.calledWith(null, sinon.match.has('success', true), sinon.match.object,
-                        sinon.match.object, sinon.match.func)).to.equal(true);
+                        sinon.match.object, sinon.match.boolean, sinon.match.func)).to.equal(true);
                     expect(validateStub.calledOnce).to.equal(true);
                     expect(createStub.calledOnce).to.equal(true);
                     expect(deleteStub.called).to.equal(false);
@@ -118,7 +118,7 @@ describe('Index unit tests', function () {
                     expect(logEventStub.called).to.equal(false);
                     expect(responseStub.calledOnce).to.equal(true);
                     expect(responseStub.calledWith(null, sinon.match.has('success', true), sinon.match.object,
-                        sinon.match.object, sinon.match.func)).to.equal(true);
+                        sinon.match.object, sinon.match.boolean, sinon.match.func)).to.equal(true);
                     expect(validateStub.calledOnce).to.equal(true);
                     expect(createStub.called).to.equal(false);
                     expect(deleteStub.called).to.equal(false);
@@ -132,7 +132,7 @@ describe('Index unit tests', function () {
                 .handler({ RequestType: 'Delete', ResourceType: 'Custom::Plugin' }, {}, function () {
                     expect(responseStub.calledOnce).to.equal(true);
                     expect(responseStub.calledWith(null, sinon.match.has('success', true), sinon.match.object,
-                        sinon.match.object, sinon.match.func)).to.equal(true);
+                        sinon.match.object, sinon.match.boolean, sinon.match.func)).to.equal(true);
                     expect(validateStub.calledOnce).to.equal(true);
                     expect(createStub.called).to.equal(false);
                     expect(deleteStub.calledOnce).to.equal(true);
@@ -146,7 +146,7 @@ describe('Index unit tests', function () {
                 .handler({ RequestType: 'Create', ResourceType: 'Custom::BadPlugin' }, {}, function () {
                     expect(responseStub.calledOnce).to.equal(true);
                     expect(responseStub.calledWith(sinon.match.has('message'), undefined, sinon.match.object,
-                        sinon.match.object, sinon.match.func)).to.equal(true);
+                        sinon.match.object, sinon.match.boolean, sinon.match.func)).to.equal(true);
                     expect(validateStub.called).to.equal(false);
                     expect(createStub.called).to.equal(false);
                     expect(deleteStub.called).to.equal(false);
@@ -160,7 +160,7 @@ describe('Index unit tests', function () {
                 .handler({ RequestType: 'Delete', ResourceType: 'Custom::BadPlugin' }, {}, function () {
                     expect(responseStub.calledOnce).to.equal(true);
                     expect(responseStub.calledWith(undefined, undefined, sinon.match.object, sinon.match.object,
-                        sinon.match.func)).to.equal(true);
+                        sinon.match.boolean, sinon.match.func)).to.equal(true);
                     expect(validateStub.called).to.equal(false);
                     expect(createStub.called).to.equal(false);
                     expect(deleteStub.called).to.equal(false);
@@ -175,7 +175,7 @@ describe('Index unit tests', function () {
                 .handler({ RequestType: 'Create', ResourceType: 'Custom::Plugin' }, {}, function () {
                     expect(responseStub.calledOnce).to.equal(true);
                     expect(responseStub.calledWith(sinon.match.has('name', 'Error'), undefined, sinon.match.object,
-                        sinon.match.object, sinon.match.func)).to.equal(true);
+                        sinon.match.object, sinon.match.boolean, sinon.match.func)).to.equal(true);
                     expect(validateStub.calledOnce).to.equal(true);
                     expect(createStub.called).to.equal(false);
                     expect(deleteStub.called).to.equal(false);

@@ -1,6 +1,6 @@
 {
   "name": "lulo",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "scripts": {
     "lint": "eslint src tests",
     "test-unit": "NODE_ENV=TEST istanbul cover --include-all-sources true -x src/**/cfn-response.js -i \"src/**/*.js\" node_modules/.bin/_mocha ./tests/unit -- --recursive",

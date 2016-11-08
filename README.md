@@ -5,7 +5,7 @@ lolu itself doesn't do much but is easily extended by registering plugins.
 
 # Installation
 ```
-$ npm install lulo
+$ npm install lulo --save
 ```
 
 ## Usage
@@ -50,6 +50,11 @@ Coming soon...
 
 ### How to write a plugin
 Coming soon...
+
+#### Plugin API
+#### Document permissions
+#### List your plugin here
+
 
 ## License
 [The MIT License (MIT)](/LICENSE)
