@@ -20,6 +20,9 @@ lulo()
 
 exports.handler = lulo.handler;
 ```
+(Yes, that is all the nodejs code you have to write)
+
+Package your index.js and node_modules and deploy to Lambda.
 
 ### AWS CloudFormation template
 ```javascript
@@ -41,7 +44,11 @@ exports.handler = lulo.handler;
 }
 ```
 
-## Plugin
+## Plugins
+### List of available plugins
+Coming soon...
+
+### How to write a plugin
 Coming soon...
 
 ## License
