@@ -1,0 +1,43 @@
+{
+    "baseConfig": true,
+    "env": {
+        "node": true
+    },
+    "plugins": [
+        "import",
+        "filenames"
+    ],
+    "rules": {
+        "quotes": [1, "single", "avoid-escape"],
+        "eqeqeq": 2,
+        "brace-style": [1, "1tbs"],
+        "eol-last": 1,
+        "no-nested-ternary": 2,
+        "padded-blocks": [1, "never"],
+        "space-before-blocks": [1, "always"],
+        "block-scoped-var": 2,
+        "no-extra-semi": 1,
+        "no-unexpected-multiline": 1,
+        "consistent-return": 0,
+        "curly": 1,
+        "default-case": 2,
+        "dot-location": ["error", "property"],
+        "dot-notation": 1,
+        "guard-for-in": 2,
+        "no-caller": 2,
+        "no-else-return": 1,
+        "max-statements": [1, 20],
+
+        "no-unused-vars": [2, { "args": "all", "argsIgnorePattern": "^_" }],   // Allow unused vars if the variable name starts with underscore
+        "indent": [1, 4, { "SwitchCase": 1 }],  // Use 4 spaces for indentation ('case' should be indented 1 level)
+        "max-len": [1, 150, 4], // Allow lines to be up to 150 characters (count tab as 4 chars)
+        "func-style": [1, "declaration"], // We should use "function foo()" to declare a function (function names are then included in stack traces)
+        "no-use-before-define": [2, "nofunc"], // Don't allow variables to be used before they are defined. But make an exception for functions (allow top-down)
+        "valid-jsdoc": 0, // Turn off checking of jsdoc.
+        "max-params": [1, 4],
+        "strict": [2, "global"],  // Enforce 'use strict'
+
+        "filenames/match-regex": [2, "^[-a-z0-9]+$", true],
+        "import/no-extraneous-dependencies": [2, { "devDependencies": true, "optionalDependencies": false }]
+    }
+}
