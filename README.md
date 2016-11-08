@@ -8,7 +8,8 @@ lolu itself doesn't do much but is easily extended by registering plugins.
 $ npm install lulo
 ```
 
-# Example Lambda index.js
+## Usage
+### Example Lambda index.js
 ```node
 'use strict';
 
@@ -20,7 +21,7 @@ lulo()
 exports.handler = lulo.handler;
 ```
 
-In AWS CloudFormation template
+### AWS CloudFormation template
 ```javascript
 {
     "MyCustomResourceName": {
@@ -38,11 +39,13 @@ In AWS CloudFormation template
         }
     }
 }
+```
 
-#License
+## Plugin
+Coming soon...
 
+## License
 [The MIT License (MIT)](/LICENSE)
 
-#Change Log
-
+## Change Log
 [Change Log](/CHANGELOG.md)
