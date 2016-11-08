@@ -97,6 +97,9 @@ Remember to document any additional IAM permissions your plugin requires.
 #### List your plugin here
 Update the README and submit a pull request to get your plugin listed here.
 
+## Why Lulo?
+Because it's a [very healthy fruit](https://en.wikipedia.org/wiki/Solanum_quitoense) :)
+
 ## License
 [The MIT License (MIT)](/LICENSE)
 
