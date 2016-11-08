@@ -47,17 +47,53 @@ Package your index.js and node_modules and deploy to Lambda.
 ```
 See the [/example](example) for a complete example
 
+#### How it works
+When you register a plugin you want to use you give it a name.
+To invoke the plugin you name your Custom Resource `Custom::RegisteredPluginName`.
+
+Each plugin works in different ways and may yield different types of results that you can interact with
+in your templates.
+
 ## Plugins
 ### List of available plugins
-Coming soon...
+
+* [Stack-Properties](https://github.com/carlnordenfelt/lulo-plugin-stack-properties): Yields Parameters, Outputs and Resources given another CloudFormation StackId or StackName.
 
 ### How to write a plugin
-Coming soon...
-
 #### Plugin API
-#### Document permissions
-#### List your plugin here
+Each plugin must expse the following functions:
+```
+validate(event);
+create(event, context, callback);
+delete(event, context, callback);
+update(event, context, callback);
+```
+##### validate(event)
+Validate the incoming event.
+validate is not expected to return anything but it is expected to
+`throw Error(message)` on validation error.
 
+##### create(event, context, callback)
+Invoked when the custom resource is created.
+
+##### update(event, context, callback)
+Invoked when the custom resource is updated.
+
+##### delete(event, context, callback)
+Invoked when the custom resource is deleted.
+
+##### Return values
+Return values are provided as a *flat* object, keys cannot be nested.
+If you need to namespace return values from a plugin, use dot.notation in the object keys.
+
+If you want to set the PhysicalResourceId of the CustomResource, set
+`response.physicalResourceId` to the value you want.
+
+#### Document permissions
+Remember to document any additional IAM permissions your plugin requires.
+
+#### List your plugin here
+Update the README and submit a pull request to get your plugin listed here.
 
 ## License
 [The MIT License (MIT)](/LICENSE)
