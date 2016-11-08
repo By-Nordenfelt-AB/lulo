@@ -1,16 +1,21 @@
 {
   "name": "lulo",
-  "version": "0.0.2",
+  "version": "0.1.0",
   "scripts": {
     "lint": "eslint src tests",
     "test-unit": "NODE_ENV=TEST istanbul cover --include-all-sources true -x src/**/cfn-response.js -i \"src/**/*.js\" node_modules/.bin/_mocha ./tests/unit -- --recursive",
     "check-coverage": "NODE_ENV=TEST istanbul check-coverage --statement 100 --branches 100 --functions 100 --lines 100",
-    "test": "npm run lint && npm run test-unit && npm run check-coverage"
+    "test": "npm run lint && npm run test-unit && npm run check-coverage",
+    "prepublish": "npm test"
   },
+  "main": "src/index.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/carlnordenfelt/lulo"
   },
+  "files": [
+    "src"
+  ],
   "keywords": [
     "AWS",
     "CloudFormation",

@@ -3,7 +3,7 @@
 lulo is a tiny plugin based framework for working with AWS CloudFormation Custom Resources.
 lolu itself doesn't do much but is easily extended by registering plugins.
 
-# Installation
+## Installation
 ```
 $ npm install lulo --save
 ```
@@ -18,7 +18,9 @@ lulo()
     .register('PluginNameSpace', require('lulo-plugin-name'))
     .register('AnotherPluginNameSpace', require('lulo-plugin-name-2'));
 
-exports.handler = lulo.handler;
+exports.handler = function (event, context, callback) {
+    lulo.handler(event, context, callback);
+};
 ```
 (Yes, that is all the nodejs code you have to write)
 
@@ -43,6 +45,7 @@ Package your index.js and node_modules and deploy to Lambda.
     }
 }
 ```
+See the [/example](example) for a complete example
 
 ## Plugins
 ### List of available plugins

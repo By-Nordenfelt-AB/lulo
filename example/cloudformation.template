@@ -1,0 +1,34 @@
+{
+    "AWSTemplateFormatVersion": "2010-09-09",
+    "Description": "Static website",
+    "Parameters": {
+        "CustomResourceLambdaArn": {
+            "Type": "String",
+            "Description": "ARN of the custom resource where Lulo is running"
+        },
+        "TargetStackName": {
+            "Type": "String",
+            "Description": "Name or ID of the stack you want to describe"
+        }
+    },
+    "Resources": {
+        "LuloPluginTest": {
+            "Type": "Custom::StackProperties",
+            "Properties": {
+                "ServiceToken": { "Ref": "CustomResourceLambdaArn" },
+                "StackName": { "Ref": "TargetStackName" }
+            }
+        }
+    },
+    "Outputs": {
+        "ExampleOutput": {
+            "Value": { "Fn::GetAtt": ["LuloPluginTest", "Output.CHANGE_THIS_VALUE"] }
+        },
+        "ExampleParameter": {
+            "Value": { "Fn::GetAtt": ["LuloPluginTest", "Parameter.CHANGE_THIS_VALUE"] }
+        },
+        "ExampleResource": {
+            "Value": { "Fn::GetAtt": ["LuloPluginTest", "Resource.CHANGE_THIS_VALUE"] }
+        }
+    }
+}

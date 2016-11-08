@@ -13,17 +13,17 @@ var SUCCESS = 'SUCCESS';
 var FAILED = 'FAILED';
 
 /* eslint max-params: 0 */
-exports = function (error, response, event, context, logResponse, callback) {
+module.exports = function (error, response, event, context, logResponse, callback) {
     var responseStatus = SUCCESS;
-    var responseData;
-    var responseReason;
+    var responseData = response;
+    var responseReason = '';
     if (error) {
         responseStatus = FAILED;
         responseData = {
             error: error.toString()
         };
         responseReason = responseData.error + '. ';
-    } else if (!response) {
+    } else if (!responseData) {
         responseData = { success: true };
     }
 
@@ -52,7 +52,7 @@ exports = function (error, response, event, context, logResponse, callback) {
     };
 
     if (logResponse) {
-        logger.log('Response', requestBody);
+        logger.log('Response', JSON.stringify(requestBody));
     }
 
     var request = https.request(options, function (httpResponse) {

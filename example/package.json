@@ -1,0 +1,30 @@
+{
+    "name": "lulo-impl",
+    "version": "0.0.1",
+    "scripts": {
+        "clean": "rm -rf node_modules && rm -rf *.zip",
+        "lint": "node_modules/.bin/eslint src",
+        "test-unit": "NODE_ENV=TEST node_modules/.bin/istanbul cover --include-all-sources true -i \"src/**/*.js\" node_modules/.bin/_mocha ./tests/unit -- --recursive",
+        "check-coverage": "NODE_ENV=TEST node_modules/.bin/istanbul check-coverage --statement 100 --branches 100 --functions 100 --lines 100",
+        "test": "npm run lint && npm run test-unit && npm run check-coverage",
+        "prepackage": "npm run clean && npm install && npm prune --production",
+        "package": "zip package.zip -r node_modules package.json src"
+    },
+    "dependencies": {
+        "lulo": "*",
+        "lulo-plugin-stack-properties": "*"
+    },
+    "devDependencies": {
+        "chai": "3.5.0",
+        "coveralls": "2.11.9",
+        "eslint": "3.0.1",
+        "eslint-config-defaults": "9.0.0",
+        "eslint-plugin-filenames": "1.0.0",
+        "eslint-plugin-import": "1.10.2",
+        "istanbul": "0.4.4",
+        "mocha": "2.5.3",
+        "mockery": "1.7.0",
+        "should": "9.0.2",
+        "sinon": "1.17.4"
+    }
+}
