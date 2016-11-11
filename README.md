@@ -7,7 +7,7 @@ lulo itself doesn't do much but is easily extended by registering plugins.
 ```
 $ npm install lulo --save
 ```
-For more information and a listing of all plugins, [visit the project page](https://carlnordenfelt.github.io)
+For more information and a listing of all plugins, [visit the project page](https://carlnordenfelt.github.io/lulo)
 
 ## Why Lulo?
 Because it's a [very healthy fruit](https://en.wikipedia.org/wiki/Solanum_quitoense) :)
