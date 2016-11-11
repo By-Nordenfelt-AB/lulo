@@ -13,8 +13,8 @@ $ npm install lulo --save
 ```node
 'use strict';
 
-var lulo = require('lulo');
-lulo()
+var Lulo = require('lulo');
+var lulo = Lulo({ logEvents: true, logResponse: true })
     .register('PluginNameSpace', require('lulo-plugin-name'))
     .register('AnotherPluginNameSpace', require('lulo-plugin-name-2'));
 
