@@ -148,33 +148,21 @@
             <p>Each plugin works in different ways and may yield different types of results that you can interact with
                 in your templates.</p>
 
+            <p>
+                If you have private plugins that you don't want to publish as npm modules it's perfectly fine to bundle those with your Lambda function
+                as long as they expose the same API as a regular plugin.
+            </p>
+
             <h2>
-                <a id="plugins" class="anchor" href="#plugins" aria-hidden="true"><span aria-hidden="true"
-                                                                                        class="octicon octicon-link"></span></a>Plugins
-            </h2>
-
-            <h3>
-                <a id="list-of-available-plugins" class="anchor" href="#list-of-available-plugins"
-                   aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>List of available
-                plugins</h3>
-
-            <ul>
-                <li>
-                    <a href="https://github.com/carlnordenfelt/lulo-plugin-stack-properties">Stack-Properties</a>:
-                    Yields Parameters, Outputs and Resources given another CloudFormation StackId or StackName.
-                </li>
-            </ul>
-
-            <h3>
                 <a id="how-to-write-a-plugin" class="anchor" href="#how-to-write-a-plugin" aria-hidden="true"><span
-                        aria-hidden="true" class="octicon octicon-link"></span></a>How to write a plugin</h3>
+                        aria-hidden="true" class="octicon octicon-link"></span></a>How to write a plugin</h2>
 
-            <h4>
+            <h#>
                 <a id="plugin-api" class="anchor" href="#plugin-api" aria-hidden="true"><span aria-hidden="true"
                                                                                               class="octicon octicon-link"></span></a>Plugin
-                API</h4>
+                API</h>
 
-            <p>Each plugin must expse the following functions:</p>
+            <p>Each plugin must expose the following function properties:</p>
 
 <pre><code>validate(event);
     create(event, context, callback);
@@ -182,52 +170,53 @@
     update(event, context, callback);
 </code></pre>
 
-            <h5>
+            <h4>
                 <a id="validateevent" class="anchor" href="#validateevent" aria-hidden="true"><span aria-hidden="true"
                                                                                                     class="octicon octicon-link"></span></a>validate(event)
-            </h5>
+            </h4>
 
             <p>Validate the incoming event.
                 validate is not expected to return anything but it is expected to
                 <code>throw Error(message)</code> on validation error.</p>
 
-            <h5>
+            <h4>
                 <a id="createevent-context-callback" class="anchor" href="#createevent-context-callback"
                    aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>create(event,
-                context, callback)</h5>
+                context, callback)</h4>
 
             <p>Invoked when the custom resource is created.</p>
 
-            <h5>
+            <h4>
                 <a id="updateevent-context-callback" class="anchor" href="#updateevent-context-callback"
                    aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>update(event,
-                context, callback)</h5>
+                context, callback)</h4>
 
             <p>Invoked when the custom resource is updated.</p>
-
-            <h5>
+            <h4>
                 <a id="deleteevent-context-callback" class="anchor" href="#deleteevent-context-callback"
                    aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>delete(event,
-                context, callback)</h5>
+                context, callback)</h4>
 
             <p>Invoked when the custom resource is deleted.</p>
 
-            <h5>
+            <h4>
                 <a id="return-values" class="anchor" href="#return-values" aria-hidden="true"><span aria-hidden="true"
                                                                                                     class="octicon octicon-link"></span></a>Return
-                values</h5>
+                values</h4>
 
             <p>Return values are provided as a <em>flat</em> object, keys cannot be nested.
-                If you need to namespace return values from a plugin, use dot.notation in the object keys.</p>
+                If you need to namespace return values from a plugin, use dot.notation in the object keys.
+            These values are referenced using <code>{ "Fn::GetAtt" ["ResourceName", "ReturnValueKey"] }</code></p>
 
             <p>If you want to set the PhysicalResourceId of the CustomResource, set
-                <code>response.physicalResourceId</code> to the value you want.</p>
+                <code>response.physicalResourceId</code> to the value you want.
+                If you set the physicalResourceId, this value can be referenced directly via <code>{ "Ref": "ResourceName" }</code></p>
 
             <p>Your plugins are expected to run on the <code>NodeJS4.3</code> Lambda runtime.</p>
 
-            <h4>
+            <h3>
                 <a id="document-permissions" class="anchor" href="#document-permissions" aria-hidden="true"><span
-                        aria-hidden="true" class="octicon octicon-link"></span></a>Document permissions</h4>
+                        aria-hidden="true" class="octicon octicon-link"></span></a>Document permissions</h3>
 
             <p>Remember to document any additional IAM permissions your plugin requires.</p>
 
