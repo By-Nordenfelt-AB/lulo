@@ -1,5 +1,5 @@
 {
-    "name": "lulo-impl",
+    "name": "lulo-example",
     "version": "0.0.1",
     "scripts": {
         "clean": "rm -rf node_modules && rm -rf *.zip",
@@ -13,18 +13,5 @@
     "dependencies": {
         "lulo": "*",
         "lulo-plugin-stack-properties": "*"
-    },
-    "devDependencies": {
-        "chai": "3.5.0",
-        "coveralls": "2.11.9",
-        "eslint": "3.0.1",
-        "eslint-config-defaults": "9.0.0",
-        "eslint-plugin-filenames": "1.0.0",
-        "eslint-plugin-import": "1.10.2",
-        "istanbul": "0.4.4",
-        "mocha": "2.5.3",
-        "mockery": "1.7.0",
-        "should": "9.0.2",
-        "sinon": "1.17.4"
     }
 }
