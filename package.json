@@ -27,9 +27,6 @@
     "url": "https://github.com/carlnordenfelt/lulo/issues"
   },
   "homepage": "https://github.com/carlnordenfelt/lulo",
-  "dependencies": {
-    "aws-sdk": "2.6.15"
-  },
   "devDependencies": {
     "chai": "3.5.0",
     "coveralls": "2.11.9",
