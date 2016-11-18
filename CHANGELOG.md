@@ -1,3 +1,6 @@
+## 0.2.0
+plugin.validate is no longer called on Delete events
+
 ## 0.1.4
 Removed dependency on aws-sdk
 

@@ -47,10 +47,12 @@ Lulo.prototype.handler = function (event, context, callback) {
     logger.log('Loading Custom Resource', pluginName);
     var plugin = this.plugins[pluginName];
 
-    try {
-        plugin.validate(event);
-    } catch (error) {
-        return cfnResponse(error);
+    if (event.RequestType !== 'Delete') {
+        try {
+            plugin.validate(event);
+        } catch (error) {
+            return cfnResponse(error);
+        }
     }
 
     switch (event.RequestType) {

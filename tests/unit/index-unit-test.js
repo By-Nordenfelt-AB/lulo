@@ -133,7 +133,7 @@ describe('Index unit tests', function () {
                     expect(responseStub.calledOnce).to.equal(true);
                     expect(responseStub.calledWith(null, sinon.match.has('success', true), sinon.match.object,
                         sinon.match.object, sinon.match.boolean, sinon.match.func)).to.equal(true);
-                    expect(validateStub.calledOnce).to.equal(true);
+                    expect(validateStub.calledOnce).to.equal(false);
                     expect(createStub.called).to.equal(false);
                     expect(deleteStub.calledOnce).to.equal(true);
                     expect(updateStub.called).to.equal(false);
