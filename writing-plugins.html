@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print">
+
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <title>Lulo</title>
+</head>
+
+<body>
+<header>
+    <div class="inner">
+        <h1>Lulo</h1>
+        <h2>A plugin engine for AWS CloudFormation Custom Resources</h2>
+        <a href="https://github.com/carlnordenfelt/lulo" class="button">
+            <small>View project on</small> GitHub
+        </a>
+    </div>
+</header>
+
+<div id="content-wrapper">
+    <div class="inner clearfix">
+        <section id="main-content">
+            <h2>
+                <a id="lulo" class="anchor" href="#lulo" aria-hidden="true"><span aria-hidden="true"
+                                                                                  class="octicon octicon-link"></span></a>Writing Plugins
+            </h2>
+
+            <p>
+                Lulo is plugin based so without plugins Lulo doesn't do anything.
+                Writing plugins is fairly straight forward depending on your use case.
+                A simple Custom Resource takes a matter of minutes to create while more complex
+                cases can easily become, well, complex. It comes down to what you want your plugin to do.
+            </p>
+
+            <h3>
+                <a id="plugin-api" class="anchor" href="#plugin-api" aria-hidden="true"><span aria-hidden="true"
+                                                                                              class="octicon octicon-link"></span></a>Plugin
+                API</h3>
+
+            <p>Each plugin module must export the following properties:</p>
+
+<pre><code>
+    schema; // Optional
+    validate(event); // Required
+    create(event, context, callback);  // Required
+    delete(event, context, callback); // Required
+    update(event, context, callback); // Required
+</code></pre>
+
+            <h4>
+                <a id="schema" class="anchor" href="#schema" aria-hidden="true"><span aria-hidden="true"
+                                                                                                    class="octicon octicon-link"></span></a>Schema (object)
+            </h4>
+            <p>
+                Schema is an optional object that can be exported by your plugin.
+                If provided, the <code>schema</code> property should indicate type specific information about
+                <code>event.ResourceProperties</code>.
+            </p>
+            <p>
+                CloudFormation casts all event input values to strings regardless of how it was initially provided in the template.
+                In some cases this can be a problem as the aws-sdk will complain that <code>"true" !== true</code>.
+                Schema allows you to focus more on what your plugin should be doing and less on type casting.
+            </p>
+            <p>
+                The schema property can define if event input should be cast to another primitive type including
+                boolean, integer and numeric (numeric allows both integer and float).
+                Structurally the schema supports primitive types, primitive arrays, complex arrays and objects.
+                Properties that are not represented in the schema are passed on as is, i.e. as string values.
+                Properties defined in the schema but that are not represented in the event are ignored.
+            </p>
+            <p>
+                If schema is provided, the resulting type casted event is provided to all other methods in your plugin.
+            </p>
+            <p>
+                <strong>Note: Schema is not for validation!</strong>
+            </p>
+            <h5>Example</h5>
+            <p>
+                This example shows how to flag the different supported types and what the schema is expected to look like.
+            </p>
+<pre><code>
+    schema = {
+        BooleanParameter: { type: 'boolean' },
+        IntegerParameter: { type: 'integer' },
+        NumericParameter: { type: 'numeric' },
+        Nested: {
+            type: 'object',
+            schema: {
+                NumericParameter: { type: 'integer' }
+            }
+        },
+        PrimitiveArray: { type: 'array', schema: 'integer' },
+        ComplexArray: {
+            type: 'array',
+            schema: {
+                BooleanParameter: { type: 'boolean' },
+                IntegerParameter: { type: 'integer' },
+                PrimitiveArray: {
+                    type: 'array',
+                    schema: 'boolean'
+                }
+            }
+        }
+    };
+</code></pre>
+
+            <h4>
+                <a id="validateevent" class="anchor" href="#validateevent" aria-hidden="true"><span aria-hidden="true"
+                                                                                                    class="octicon octicon-link"></span></a>validate(event)
+            </h4>
+
+            <p>Validate the incoming event.
+                validate is not expected to return anything but it is expected to
+                <code>throw Error(message)</code> on validation error.</p>
+            <p>
+                Validate is not invoked on Delete requests.
+            </p>
+            <h4>
+                <a id="createevent-context-callback" class="anchor" href="#createevent-context-callback"
+                   aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>create(event,
+                context, callback)</h4>
+
+            <p>Invoked when the custom resource is created.</p>
+
+            <h4>
+                <a id="updateevent-context-callback" class="anchor" href="#updateevent-context-callback"
+                   aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>update(event,
+                context, callback)</h4>
+
+            <p>Invoked when the custom resource is updated.</p>
+            <h4>
+                <a id="deleteevent-context-callback" class="anchor" href="#deleteevent-context-callback"
+                   aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>delete(event,
+                context, callback)</h4>
+
+            <p>Invoked when the custom resource is deleted.</p>
+
+            <h4>
+                <a id="return-values" class="anchor" href="#return-values" aria-hidden="true"><span aria-hidden="true"
+                                                                                                    class="octicon octicon-link"></span></a>Return
+                values</h4>
+
+            <p>Return values are provided as a <em>flat</em> object, keys cannot be nested.
+                If you need to namespace return values from a plugin, use dot.notation in the object keys.
+                These values are referenced using <code>{ "Fn::GetAtt" ["ResourceName", "ReturnValueKey"] }</code></p>
+
+            <p>If you want to set the PhysicalResourceId of the CustomResource, set
+                <code>response.physicalResourceId</code> to the value you want.
+                If you set the physicalResourceId, this value can be referenced directly via <code>{ "Ref": "ResourceName" }</code></p>
+
+            <p>Your plugins are expected to run on the <code>nodejs4.3</code> Lambda runtime.</p>
+
+            <h3>
+                <a id="document-permissions" class="anchor" href="#document-permissions" aria-hidden="true"><span
+                        aria-hidden="true" class="octicon octicon-link"></span></a>Document permissions</h3>
+
+            <p>Remember to document any additional IAM permissions that your plugin requires.</p>
+
+            <h3>
+                <a id="list-your-plugin-here" class="anchor" href="#list-your-plugin-here" aria-hidden="true"><span
+                        aria-hidden="true" class="octicon octicon-link"></span></a>List your plugin on the project page</h3>
+
+            <p>
+                Update
+                <a href="https://github.com/carlnordenfelt/lulo/blob/gh-pages/plugins.html">plugins.html</a>
+                and submit a pull request to get your plugin listed on the project page.
+            </p>
+        </section>
+
+        <aside id="sidebar">
+            <a href="https://github.com/carlnordenfelt/lulo/zipball/master" class="button">
+                <small>Download</small>
+                .zip file
+            </a>
+            <a href="https://github.com/carlnordenfelt/lulo/tarball/master" class="button">
+                <small>Download</small>
+                .tar.gz file
+            </a>
+
+            <p class="repo-owner"><a href="https://github.com/carlnordenfelt/lulo"></a> is maintained by <a
+                    href="https://github.com/carlnordenfelt">carlnordenfelt</a>.</p>
+
+            <p>This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the Architect theme
+                by <a href="https://twitter.com/jasonlong">Jason Long</a>.</p>
+        </aside>
+    </div>
+</div>
+
+
+</body>
+</html>
