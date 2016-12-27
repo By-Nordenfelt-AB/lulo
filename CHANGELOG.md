@@ -1,3 +1,6 @@
+## 0.3.0
+Added event normalizer for optional use in plugins
+
 ## 0.2.0
 plugin.validate is no longer called on Delete events
 

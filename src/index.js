@@ -50,7 +50,9 @@ Lulo.prototype.handler = function (event, context, callback) {
 
     /* istanbul ignore else */
     if (typeof plugin.schema) {
+        console.log('Normalizing event using plugin schema', JSON.stringify(plugin.schema));
         event = normalize(event, plugin.schema);
+        console.log('Event normalized', JSON.stringify(event));
     }
 
     if (event.RequestType !== 'Delete') {
