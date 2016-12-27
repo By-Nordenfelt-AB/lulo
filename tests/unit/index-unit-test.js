@@ -14,6 +14,7 @@ describe('Index unit tests', function () {
     var deleteStub = sinon.stub();
     var logStub = sinon.stub();
     var logEventStub = sinon.stub();
+    var normalizeStub = sinon.stub();
 
     before(function () {
         mockery.enable({
@@ -23,6 +24,7 @@ describe('Index unit tests', function () {
 
         var pluginMock = {
             validate: validateStub,
+            normalize: {},
             create: createStub,
             update: updateStub,
             delete: deleteStub
@@ -35,6 +37,7 @@ describe('Index unit tests', function () {
         mockery.registerMock('./lib/cfn-response', responseStub);
         mockery.registerMock('./lib/logger', logMock);
         mockery.registerMock('plugin', pluginMock);
+        mockery.registerMock('./lib/normalize', normalizeStub);
         subject = require('../../src/index');
     });
     beforeEach(function () {
@@ -50,6 +53,8 @@ describe('Index unit tests', function () {
         deleteStub.yields(null, { success: true });
         logStub.reset().resetBehavior();
         logStub.returns();
+        normalizeStub.reset().resetBehavior();
+        normalizeStub.returnsArg(0);
         logEventStub.reset().resetBehavior();
         logEventStub.returns();
         event = {

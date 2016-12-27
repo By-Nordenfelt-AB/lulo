@@ -2,6 +2,7 @@
 
 var response = require('./lib/cfn-response');
 var logger = require('./lib/logger');
+var normalize = require('./lib/normalize');
 
 module.exports = Lulo;
 
@@ -46,6 +47,11 @@ Lulo.prototype.handler = function (event, context, callback) {
 
     logger.log('Loading Custom Resource', pluginName);
     var plugin = this.plugins[pluginName];
+
+    /* istanbul ignore else */
+    if (typeof plugin.schema) {
+        event = normalize(event, plugin.schema);
+    }
 
     if (event.RequestType !== 'Delete') {
         try {
