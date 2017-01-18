@@ -24,7 +24,7 @@ describe('Index unit tests', function () {
 
         var pluginMock = {
             validate: validateStub,
-            normalize: {},
+            schema: {},
             create: createStub,
             update: updateStub,
             delete: deleteStub
@@ -82,8 +82,7 @@ describe('Index unit tests', function () {
 
     describe('register', function () {
         it('should succeed', function (done) {
-            var lulo = subject()
-                .register('testPlugin', {});
+            var lulo = subject().register('testPlugin', {});
             expect(lulo).to.be.an('object');
             expect(lulo.plugins.testPlugin).to.be.an('object');
             done();
