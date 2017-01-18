@@ -49,7 +49,7 @@ Lulo.prototype.handler = function (event, context, callback) {
     var plugin = this.plugins[pluginName];
 
     /* istanbul ignore else */
-    if (typeof plugin.schema) {
+    if (plugin.schema && typeof plugin.schema) {
         console.log('Normalizing event using plugin schema', JSON.stringify(plugin.schema));
         event = normalize(event, plugin.schema);
         console.log('Event normalized', JSON.stringify(event));
