@@ -165,6 +165,14 @@
                         aria-hidden="true" class="octicon octicon-link"></span></a>Document permissions</h3>
 
             <p>Remember to document any additional IAM permissions that your plugin requires.</p>
+            
+            <h3>
+                <a id="dependencies" class="anchor" href="#dependencies" aria-hidden="true"><span
+                        aria-hidden="true" class="octicon octicon-link"></span></a>Dependencies</h3>
+
+            <p>Althoguh most current lulo plugins bundle the aws-sdk, the recommendation hence forth is not to do this but let Lambda use what ever version of the sdk it currently ships with.
+               If you need to use a newer version is it fine to bundle it but try to update your plugin once Lambda uses a version that satisifies your requirements.</p>
+            <p>Keeping the plugins small will decsrease the cold start time and save money.</p>
 
             <h3>
                 <a id="list-your-plugin-here" class="anchor" href="#list-your-plugin-here" aria-hidden="true"><span
