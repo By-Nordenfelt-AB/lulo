@@ -1,3 +1,6 @@
+## 1.0.0
+Updated dev dependencies
+
 ## 0.3.0
 Added event normalizer for optional use in plugins
 
