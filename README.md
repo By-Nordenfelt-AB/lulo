@@ -10,6 +10,9 @@ or be used a plain nodejs modules in your own project.
 
 The goal is of course to build a substantial plugin repository so please, contribute! :)
 
+[![Build Status](https://travis-ci.org/carlnordenfelt/lulo.svg?branch=master)](https://travis-ci.org/carlnordenfelt/lulo)
+[![npm version](https://badge.fury.io/js/lulo.svg)](https://badge.fury.io/js/lulo)
+
 ## Installation
 ```
 $ npm i lulo --save

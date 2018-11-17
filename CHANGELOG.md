@@ -1,4 +1,4 @@
-## 2.0.0
+## 2.0.1
 * Dropped support for older node versions 
 * Refactored a bit
 * Updated example to include the Lulo Lambda function
