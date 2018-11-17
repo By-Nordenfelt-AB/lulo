@@ -1,29 +1,33 @@
-'use strict';
+const expect  = require('chai').expect;
+const mockery = require('mockery');
+const sinon   = require('sinon');
 
-var expect = require('chai').expect;
-var mockery = require('mockery');
-var sinon = require('sinon');
+describe('Normalize unit tests', () => {
+    let subject;
+    let schema;
+    const warnStub = sinon.stub();
 
-describe('Normalize unit tests', function () {
-    var logStub = sinon.stub();
-    var subject;
-    var schema;
-
-    before(function () {
+    before(() => {
         mockery.enable({
             useCleanCache: true,
             warnOnUnregistered: false
         });
-        var logMock = {
-            log: logStub
+
+        const logMock = {
+            warn: warnStub,
+            options: function () { return logMock; }
         };
-        mockery.registerMock('./logger', logMock);
+        mockery.registerMock('log4njs', logMock);
         subject = require('../../../src/lib/normalize');
     });
 
-    beforeEach(function () {
-        logStub.reset().resetBehavior();
-        logStub.returns();
+    after(() => {
+        mockery.deregisterAll();
+        mockery.disable();
+    });
+
+    beforeEach(() => {
+        warnStub.reset();
 
         schema = {
             BooleanParameter: { type: 'boolean' },
@@ -49,9 +53,9 @@ describe('Normalize unit tests', function () {
         };
     });
 
-    describe('normalize', function () {
-        it('should normalize all types of an event', function (done) {
-            var event = {
+    describe('normalize', () => {
+        it('should normalize all types of an event', (done) => {
+            const event = {
                 ResourceProperties: {
                     BooleanParameter: 'true',
                     IntegerParameter: '123',
@@ -91,22 +95,22 @@ describe('Normalize unit tests', function () {
 
             expect(typeof event.ResourceProperties.NotInSchemaParameter).to.equal('string');
             expect(event.ResourceProperties.NotInSchemaParameter).to.equal('NotInSchemaValue');
-            expect(logStub.called).to.equal(false);
+            expect(warnStub.called).to.equal(false);
             done();
         });
-        it('should log if schema is incorrectly defined', function (done) {
-            var event = {
+        it('should log if schema is incorrectly defined', (done) => {
+            const event = {
                 ResourceProperties: {
                     IncorrectParameter: 'IncorrectValue'
                 }
             };
             subject(event, schema);
-            expect(logStub.calledOnce).to.equal(true);
+            expect(warnStub.calledOnce).to.equal(true);
             done();
         });
 
-        it('should normalize OldResource properties', function (done) {
-            var event = {
+        it('should normalize OldResource properties', (done) => {
+            const event = {
                 ResourceProperties: {},
                 OldResourceProperties: {}
             };

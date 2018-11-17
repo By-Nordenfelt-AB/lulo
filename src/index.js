@@ -1,8 +1,7 @@
-'use strict';
-
-var response = require('./lib/cfn-response');
-var logger = require('./lib/logger');
-var normalize = require('./lib/normalize');
+const log       = require('log4njs').options({ hideDate: true });
+const response  = require('./lib/cfn-response');
+const logEvent  = require('./lib/log-event');
+const normalize = require('./lib/normalize');
 
 module.exports = Lulo;
 
@@ -12,32 +11,32 @@ function Lulo(options) {
         return new Lulo(options);
     }
 
-    this.logEvents = options.logEvents;
-    this.logResponse = options.logResponse;
+    this.logEvents        = options.logEvents;
+    this.logResponse      = options.logResponse;
     this.maskedProperties = options.maskedProperties || [];
-    this.plugins = {};
+    this.plugins          = {};
 }
 
-/*
+/**
  * Register a new custom resource type
- *
  */
 Lulo.prototype.register = function (resourceName, resource) {
     if (this.plugins[resourceName]) {
         throw new Error('Trying to register same plugin name twice: ' + resourceName);
     }
     this.plugins[resourceName] = resource;
+
     return this;
 };
 
 /* eslint global-require: 0 */
 Lulo.prototype.handler = function (event, context, callback) {
-    var logResponse = this.logResponse;
+    const logResponse = this.logResponse;
     if (this.logEvents) {
-        logger.logEvent(event, this.maskedProperties);
+        logEvent(event, this.maskedProperties);
     }
 
-    var pluginName = event.ResourceType.split('::')[1];
+    const pluginName = event.ResourceType.split('::')[1];
     if (!this.plugins[pluginName]) {
         if (event.RequestType === 'Delete') {
             return cfnResponse();
@@ -45,14 +44,14 @@ Lulo.prototype.handler = function (event, context, callback) {
         return cfnResponse(new Error('Unknown resource type: ' + event.ResourceType));
     }
 
-    logger.log('Loading Custom Resource', pluginName);
-    var plugin = this.plugins[pluginName];
+    log.info('Loading Custom Resource', pluginName);
+    const plugin = this.plugins[pluginName];
 
     /* istanbul ignore else */
     if (plugin.schema && typeof plugin.schema) {
-        console.log('Normalizing event using plugin schema', JSON.stringify(plugin.schema));
+        log.info('Normalizing event using plugin schema', JSON.stringify(plugin.schema));
         event = normalize(event, plugin.schema);
-        console.log('Event normalized', JSON.stringify(event));
+        log.info('Event normalized', JSON.stringify(event));
     }
 
     if (event.RequestType !== 'Delete') {

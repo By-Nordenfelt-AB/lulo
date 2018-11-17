@@ -1,10 +1,8 @@
-'use strict';
+const Lulo = require('lulo');
 
-var Lulo = require('lulo');
-
-var lulo = Lulo({ logEvents: true, logResponse: true })
+const lulo = Lulo({ logEvents: true, logResponse: true })
     .register('StackProperties', require('lulo-plugin-stack-properties'));
 
-exports.handler = function (event, context, callback) {
+exports.handler = (event, context, callback) => {
     lulo.handler(event, context, callback);
 };

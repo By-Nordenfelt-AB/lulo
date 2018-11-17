@@ -1,9 +1,6 @@
 const log = require('log4njs').options({ hideDate: true });
 
-
-module.exports = (event, maskedProperties) =
->
-{
+module.exports = (event, maskedProperties) => {
     // Create copy so we don't distort the original event
     const eventCopy = JSON.parse(JSON.stringify(event));
 
@@ -25,5 +22,4 @@ module.exports = (event, maskedProperties) =
         }
     }
     log.info('Processing event:\n', JSON.stringify(eventCopy));
-}
-;
+};

@@ -12,7 +12,7 @@ The goal is of course to build a substantial plugin repository so please, contri
 
 ## Installation
 ```
-$ npm install lulo --save
+$ npm i lulo --save
 ```
 For more information and a listing of all plugins, [visit the project page](https://carlnordenfelt.github.io/lulo)
 A complete example implementation can be found [here](https://github.com/carlnordenfelt/lulo/tree/master/example)

@@ -1,4 +1,3 @@
-'use strict';
 /**
  * Cloudformation automatically casts all property values to string which
  * is not always accepted by the nodejs sdk for other types suh as integers and booleans.
@@ -7,7 +6,7 @@
  * Supported types are boolean, integer and numeric (integer or float).
  * It handles nested properties as well as array properties.
  */
-var logger = require('./logger');
+const log = require('log4njs').options({ hideDate: true });
 
 module.exports = function (event, schema) {
     event.ResourceProperties = normalize(event.ResourceProperties, schema);
@@ -18,7 +17,7 @@ module.exports = function (event, schema) {
 };
 
 function normalize(resourceProperties, schema) {
-    var keys = Object.getOwnPropertyNames(resourceProperties);
+    const keys = Object.getOwnPropertyNames(resourceProperties);
     keys.forEach(function (key) {
         if (schema[key]) {
             if (schema[key].type === 'object') {
@@ -27,7 +26,7 @@ function normalize(resourceProperties, schema) {
                 if (typeof schema[key].schema === 'string') { // primitive array
                     resourceProperties[key] = normalizePrimitiveArrayProperty(resourceProperties[key], key, schema[key].schema);
                 } else { // complex array
-                    for (var i = 0; i < resourceProperties[key].length; i++) {
+                    for (let i = 0; i < resourceProperties[key].length; i++) {
                         resourceProperties[key][i] = normalize(resourceProperties[key][i], schema[key].schema);
                     }
                 }
@@ -40,7 +39,7 @@ function normalize(resourceProperties, schema) {
 }
 
 function normalizePrimitiveArrayProperty(arrayProperty, key, type) {
-    for (var i = 0; i < arrayProperty.length; i++) {
+    for (let i = 0; i < arrayProperty.length; i++) {
         arrayProperty[i] = normalizeProperty(arrayProperty[i], key, type);
     }
     return arrayProperty;
@@ -58,7 +57,7 @@ function normalizeProperty(property, key, type) {
             property = parseFloat(property);
             break;
         default:
-            logger.log('Unknown schema property type', { key: key, type: type });
+            log.warn('Unknown schema property type', { key: key, type: type });
     }
     return property;
 }

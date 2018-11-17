@@ -1,14 +1,34 @@
-'use strict';
+const expect  = require('chai').expect;
+const sinon   = require('sinon');
+const mockery = require('mockery');
 
-var expect = require('chai').expect;
-var sinon = require('sinon');
+describe('Logger unit tests', () => {
+    let subject;
+    let event;
+    const infoStub = sinon.stub();
 
-describe('Logger unit tests', function () {
-    var subject = require('../../../src/lib/logger');
-    var event;
-    var logSpy = sinon.spy(subject, 'log');
+    before(() => {
+        mockery.enable({
+            useCleanCache: true,
+            warnOnUnregistered: false
+        });
 
-    beforeEach(function () {
+        const logMock = {
+            info: infoStub,
+            options: function () { return logMock; }
+        };
+
+        mockery.registerMock('log4njs', logMock);
+        subject = require('../../../src/lib/log-event');
+    });
+
+    after(() => {
+        mockery.deregisterAll();
+        mockery.disable();
+    });
+
+    beforeEach(() => {
+        infoStub.reset();
         event = {
             ResourceProperties: {
                 password: 'password',
@@ -19,29 +39,21 @@ describe('Logger unit tests', function () {
                 otherField: 'otherField'
             }
         };
-        logSpy.reset();
     });
 
-    describe('log', function () {
-        it('coverage...', function (done) {
-            subject.log();
-            done();
-        });
-    });
-
-    describe('handler', function () {
-        it('Should log event without masking anything', function (done) {
-            subject.logEvent(event, []);
-            var logEvent = JSON.parse(logSpy.getCalls(0)[0].proxy.args[0][1]);
+    describe('handler', () => {
+        it('Should log event without masking anything', (done) => {
+            subject(event, []);
+            const logEvent = JSON.parse(infoStub.getCalls(0)[0].proxy.args[0][1]);
             expect(logEvent.ResourceProperties.password).to.equal('password');
             expect(logEvent.ResourceProperties.otherField).to.equal('otherField');
             expect(logEvent.OldResourceProperties.password).to.equal('password');
             expect(logEvent.OldResourceProperties.otherField).to.equal('otherField');
             done();
         });
-        it('Should log event and mask password property', function (done) {
-            subject.logEvent(event, ['password']);
-            var logEvent = JSON.parse(logSpy.getCalls(0)[0].proxy.args[0][1]);
+        it('Should log event and mask password property', (done) => {
+            subject(event, ['password']);
+            const logEvent = JSON.parse(infoStub.getCalls(0)[0].proxy.args[0][1]);
             expect(logEvent.ResourceProperties.password).to.equal('****masked****');
             expect(logEvent.ResourceProperties.otherField).to.equal('otherField');
             expect(logEvent.OldResourceProperties.password).to.equal('****masked****');
@@ -49,11 +61,12 @@ describe('Logger unit tests', function () {
             done();
         });
 
-        it('Coverage...', function (done) {
+        it('Coverage...', (done) => {
             delete event.ResourceProperties;
             delete event.OldResourceProperties;
-            subject.logEvent(event);
-            var logEvent = JSON.parse(logSpy.getCalls(0)[0].proxy.args[0][1]);
+
+            subject(event);
+            const logEvent = JSON.parse(infoStub.getCalls(0)[0].proxy.args[0][1]);
             expect(logEvent.ResourceProperties).to.equal(undefined);
             expect(logEvent.OldResourceProperties).to.equal(undefined);
             done();

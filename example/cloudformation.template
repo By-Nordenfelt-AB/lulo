@@ -2,33 +2,87 @@
     "AWSTemplateFormatVersion": "2010-09-09",
     "Description": "Static website",
     "Parameters": {
-        "CustomResourceLambdaArn": {
+        "PackageKey": {
             "Type": "String",
-            "Description": "ARN of the custom resource where Lulo is running"
+            "Description": "S3 location of Zip file containing index.js and node_modules"
+        },
+        "PackageBucket": {
+            "Type": "String",
+            "Description": "Bucket Zip file can be found"
         },
         "TargetStackName": {
             "Type": "String",
             "Description": "Name or ID of the stack you want to describe"
+        },
+        "ParameterName": {
+            "Type": "String",
+            "Description": "Name of the parameter value you want to output from the stack"
         }
     },
     "Resources": {
+        "LuloFunctionRole" : {
+            "Type": "AWS::IAM::Role",
+            "Properties": {
+                "AssumeRolePolicyDocument": {
+                    "Version": "2012-10-17",
+                    "Statement": [
+                        {
+                            "Effect": "Allow",
+                            "Principal": { "Service": ["lambda.amazonaws.com"] },
+                            "Action": ["sts:AssumeRole"]
+                        }
+                    ]
+                },
+                "Policies": [
+                    {
+                        "PolicyName": "LambdaPermissions",
+                        "PolicyDocument": {
+                            "Version": "2012-10-17",
+                            "Statement": [
+                                {
+                                    "Sid": "lulo-plugin-stack-properties",
+                                    "Action": [
+                                        "cloudformation:DescribeStacks",
+                                        "cloudformation:ListStackResources"
+                                    ],
+                                    "Effect": "Allow",
+                                    "Resource": "*"
+                                }
+                            ]
+                        }
+                    }
+                ],
+                "ManagedPolicyArns": ["arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"]
+            }
+        },
+        "LuloFunction": {
+            "Type": "AWS::Lambda::Function",
+            "Properties": {
+                "FunctionName": "Lulo", 
+                "Code": {
+                    "S3Bucket": { "Ref": "PackageBucket" },
+                    "S3Key": { "Ref": "PackageKey" }
+                },
+                "Handler": "index.handler",
+                "Runtime": "nodejs8.10",
+                "Timeout": 300,
+                "Role": { "Fn::GetAtt" : ["LuloFunctionRole", "Arn"] }
+            }
+        },
         "LuloPluginTest": {
             "Type": "Custom::StackProperties",
             "Properties": {
-                "ServiceToken": { "Ref": "CustomResourceLambdaArn" },
+                "ServiceToken": { "Fn::GetAtt": ["LuloFunction", "Arn"] },
                 "StackName": { "Ref": "TargetStackName" }
             }
         }
     },
     "Outputs": {
-        "ExampleOutput": {
-            "Value": { "Fn::GetAtt": ["LuloPluginTest", "Output.CHANGE_THIS_VALUE"] }
-        },
         "ExampleParameter": {
-            "Value": { "Fn::GetAtt": ["LuloPluginTest", "Parameter.CHANGE_THIS_VALUE"] }
-        },
-        "ExampleResource": {
-            "Value": { "Fn::GetAtt": ["LuloPluginTest", "Resource.CHANGE_THIS_VALUE"] }
+            "Value": { "Fn::GetAtt": [
+                "LuloPluginTest",
+                { "Fn::Join": ["", ["Parameter.", { "Ref": "ParameterName" }]] }
+            ] }
         }
     }
 }

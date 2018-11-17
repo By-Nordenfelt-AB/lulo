@@ -1,61 +1,57 @@
 'use strict';
 
-var expect = require('chai').expect;
-var mockery = require('mockery');
-var sinon = require('sinon');
+const expect = require('chai').expect;
+const mockery = require('mockery');
+const sinon = require('sinon');
 
-describe('Index unit tests', function () {
-    var subject;
-    var event;
-    var responseStub = sinon.stub();
-    var validateStub = sinon.stub();
-    var createStub = sinon.stub();
-    var updateStub = sinon.stub();
-    var deleteStub = sinon.stub();
-    var logStub = sinon.stub();
-    var logEventStub = sinon.stub();
-    var normalizeStub = sinon.stub();
+describe('Index unit tests', () => {
+    let subject;
+    let event;
+    const responseStub = sinon.stub();
+    const validateStub = sinon.stub();
+    const createStub = sinon.stub();
+    const updateStub = sinon.stub();
+    const deleteStub = sinon.stub();
+    const logStub = sinon.stub();
+    const logEventStub = sinon.stub();
+    const normalizeStub = sinon.stub();
 
-    before(function () {
+    before(() => {
         mockery.enable({
             useCleanCache: true,
             warnOnUnregistered: false
         });
 
-        var pluginMock = {
+        const pluginMock = {
             validate: validateStub,
             schema: {},
             create: createStub,
             update: updateStub,
             delete: deleteStub
         };
-        var logMock = {
-            log: logStub,
-            logEvent: logEventStub
-        };
 
         mockery.registerMock('./lib/cfn-response', responseStub);
-        mockery.registerMock('./lib/logger', logMock);
+        mockery.registerMock('./lib/log-event', logEventStub);
         mockery.registerMock('plugin', pluginMock);
         mockery.registerMock('./lib/normalize', normalizeStub);
         subject = require('../../src/index');
     });
-    beforeEach(function () {
-        responseStub.reset().resetBehavior();
+    beforeEach(() => {
+        responseStub.reset();
         responseStub.yields();
-        validateStub.reset().resetBehavior();
+        validateStub.reset();
         validateStub.returns();
-        createStub.reset().resetBehavior();
+        createStub.reset();
         createStub.yields(null, { success: true });
-        updateStub.reset().resetBehavior();
+        updateStub.reset();
         updateStub.yields(null, { success: true });
-        deleteStub.reset().resetBehavior();
+        deleteStub.reset();
         deleteStub.yields(null, { success: true });
-        logStub.reset().resetBehavior();
+        logStub.reset();
         logStub.returns();
-        normalizeStub.reset().resetBehavior();
+        normalizeStub.reset();
         normalizeStub.returnsArg(0);
-        logEventStub.reset().resetBehavior();
+        logEventStub.reset();
         logEventStub.returns();
         event = {
             RequestType: 'Create',
@@ -68,26 +64,26 @@ describe('Index unit tests', function () {
             }
         };
     });
-    after(function () {
+    after(() => {
         mockery.deregisterAll();
         mockery.disable();
     });
 
-    describe('__construct', function () {
-        it('should succeed', function (done) {
+    describe('__construct', () => {
+        it('should succeed', (done) => {
             expect(subject()).to.be.an('object');
             done();
         });
     });
 
-    describe('register', function () {
-        it('should succeed', function (done) {
-            var lulo = subject().register('testPlugin', {});
+    describe('register', () => {
+        it('should succeed', (done) => {
+            const lulo = subject().register('testPlugin', {});
             expect(lulo).to.be.an('object');
             expect(lulo.plugins.testPlugin).to.be.an('object');
             done();
         });
-        it('should fail on duplicate', function (done) {
+        it('should fail on duplicate', (done) => {
             expect(registerDuplicate).to.throw(/Trying to register same plugin name twice/);
             done();
             function registerDuplicate() {
@@ -99,11 +95,11 @@ describe('Index unit tests', function () {
         });
     });
 
-    describe('handler', function () {
-        it('Create should succeed', function (done) {
+    describe('handler', () => {
+        it('Create should succeed', (done) => {
             subject({ logEvents: true })
                 .register('Plugin', require('plugin')) // eslint-disable-line import/no-extraneous-dependencies
-                .handler(event, {}, function () {
+                .handler(event, {}, () => {
                     expect(logEventStub.calledOnce).to.equal(true);
                     expect(responseStub.calledOnce).to.equal(true);
                     expect(responseStub.calledWith(null, sinon.match.has('success', true), sinon.match.object,
@@ -115,10 +111,10 @@ describe('Index unit tests', function () {
                     done();
                 });
         });
-        it('Update should succeed', function (done) {
+        it('Update should succeed', (done) => {
             subject()
                 .register('Plugin', require('plugin')) // eslint-disable-line import/no-extraneous-dependencies
-                .handler({ RequestType: 'Update', ResourceType: 'Custom::Plugin' }, {}, function () {
+                .handler({ RequestType: 'Update', ResourceType: 'Custom::Plugin' }, {}, () => {
                     expect(logEventStub.called).to.equal(false);
                     expect(responseStub.calledOnce).to.equal(true);
                     expect(responseStub.calledWith(null, sinon.match.has('success', true), sinon.match.object,
@@ -130,10 +126,10 @@ describe('Index unit tests', function () {
                     done();
                 });
         });
-        it('Delete should succeed', function (done) {
+        it('Delete should succeed', (done) => {
             subject()
                 .register('Plugin', require('plugin')) // eslint-disable-line import/no-extraneous-dependencies
-                .handler({ RequestType: 'Delete', ResourceType: 'Custom::Plugin' }, {}, function () {
+                .handler({ RequestType: 'Delete', ResourceType: 'Custom::Plugin' }, {}, () => {
                     expect(responseStub.calledOnce).to.equal(true);
                     expect(responseStub.calledWith(null, sinon.match.has('success', true), sinon.match.object,
                         sinon.match.object, sinon.match.boolean, sinon.match.func)).to.equal(true);
@@ -144,10 +140,10 @@ describe('Index unit tests', function () {
                     done();
                 });
         });
-        it('Should fail if plugin does not exist on create', function (done) {
+        it('Should fail if plugin does not exist on create', (done) => {
             subject()
                 .register('Plugin', require('plugin')) // eslint-disable-line import/no-extraneous-dependencies
-                .handler({ RequestType: 'Create', ResourceType: 'Custom::BadPlugin' }, {}, function () {
+                .handler({ RequestType: 'Create', ResourceType: 'Custom::BadPlugin' }, {}, () => {
                     expect(responseStub.calledOnce).to.equal(true);
                     expect(responseStub.calledWith(sinon.match.has('message'), undefined, sinon.match.object,
                         sinon.match.object, sinon.match.boolean, sinon.match.func)).to.equal(true);
@@ -158,10 +154,10 @@ describe('Index unit tests', function () {
                     done();
                 });
         });
-        it('Should not fail if plugin does not exist on delete', function (done) {
+        it('Should not fail if plugin does not exist on delete', (done) => {
             subject()
                 .register('Plugin', require('plugin')) // eslint-disable-line import/no-extraneous-dependencies
-                .handler({ RequestType: 'Delete', ResourceType: 'Custom::BadPlugin' }, {}, function () {
+                .handler({ RequestType: 'Delete', ResourceType: 'Custom::BadPlugin' }, {}, () => {
                     expect(responseStub.calledOnce).to.equal(true);
                     expect(responseStub.calledWith(undefined, undefined, sinon.match.object, sinon.match.object,
                         sinon.match.boolean, sinon.match.func)).to.equal(true);
@@ -172,11 +168,11 @@ describe('Index unit tests', function () {
                     done();
                 });
         });
-        it('Should fail if plugin.validate throws error', function (done) {
+        it('Should fail if plugin.validate throws error', (done) => {
             validateStub.throws('Error');
             subject()
                 .register('Plugin', require('plugin')) // eslint-disable-line import/no-extraneous-dependencies
-                .handler({ RequestType: 'Create', ResourceType: 'Custom::Plugin' }, {}, function () {
+                .handler({ RequestType: 'Create', ResourceType: 'Custom::Plugin' }, {}, () => {
                     expect(responseStub.calledOnce).to.equal(true);
                     expect(responseStub.calledWith(sinon.match.has('name', 'Error'), undefined, sinon.match.object,
                         sinon.match.object, sinon.match.boolean, sinon.match.func)).to.equal(true);
