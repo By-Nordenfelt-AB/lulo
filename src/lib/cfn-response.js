@@ -6,7 +6,7 @@
  This file is distributed on an 'AS IS' BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, express or implied.
  See the License for the specific language governing permissions and limitations under the License.
  */
-
+/* istanbul ignore file */
 const log   = require('log4njs');
 const https = require('https');
 const url   = require('url');
@@ -40,7 +40,7 @@ module.exports = (error, response, event, context, logResponse, callback) => {
         RequestId: event.RequestId,
         LogicalResourceId: event.LogicalResourceId,
         Data: responseData,
-        NoEcho: event.ResourceProperties._NoEcho ? true : false
+        NoEcho: !!event.ResourceProperties._NoEcho
     });
 
     const parsedUrl = url.parse(event.ResponseURL);

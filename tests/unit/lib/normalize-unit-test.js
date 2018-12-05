@@ -15,7 +15,9 @@ describe('Normalize unit tests', () => {
 
         const logMock = {
             warn: warnStub,
-            options: function () { return logMock; }
+            options: function () {
+                return logMock;
+            }
         };
         mockery.registerMock('log4njs', logMock);
         subject = require('../../../src/lib/normalize');

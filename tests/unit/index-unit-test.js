@@ -1,19 +1,17 @@
-'use strict';
-
-const expect = require('chai').expect;
+const expect  = require('chai').expect;
 const mockery = require('mockery');
-const sinon = require('sinon');
+const sinon   = require('sinon');
 
 describe('Index unit tests', () => {
     let subject;
     let event;
-    const responseStub = sinon.stub();
-    const validateStub = sinon.stub();
-    const createStub = sinon.stub();
-    const updateStub = sinon.stub();
-    const deleteStub = sinon.stub();
-    const logStub = sinon.stub();
-    const logEventStub = sinon.stub();
+    const responseStub  = sinon.stub();
+    const validateStub  = sinon.stub();
+    const createStub    = sinon.stub();
+    const updateStub    = sinon.stub();
+    const deleteStub    = sinon.stub();
+    const logStub       = sinon.stub();
+    const logEventStub  = sinon.stub();
     const normalizeStub = sinon.stub();
 
     before(() => {
@@ -86,6 +84,7 @@ describe('Index unit tests', () => {
         it('should fail on duplicate', (done) => {
             expect(registerDuplicate).to.throw(/Trying to register same plugin name twice/);
             done();
+
             function registerDuplicate() {
                 subject()
                     .register('testPlugin', {})

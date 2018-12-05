@@ -15,7 +15,9 @@ describe('Logger unit tests', () => {
 
         const logMock = {
             info: infoStub,
-            options: function () { return logMock; }
+            options: function () {
+                return logMock;
+            }
         };
 
         mockery.registerMock('log4njs', logMock);

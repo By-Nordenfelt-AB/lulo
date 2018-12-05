@@ -1,3 +1,4 @@
+/* istanbul ignore file */
 const Lulo = require('lulo');
 
 const lulo = Lulo({ logEvents: true, logResponse: true })
