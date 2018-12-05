@@ -39,7 +39,8 @@ module.exports = (error, response, event, context, logResponse, callback) => {
         StackId: event.StackId,
         RequestId: event.RequestId,
         LogicalResourceId: event.LogicalResourceId,
-        Data: responseData
+        Data: responseData,
+        NoEcho: event.ResourceProperties._NoEcho ? true : false
     });
 
     const parsedUrl = url.parse(event.ResponseURL);
