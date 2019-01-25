@@ -149,10 +149,26 @@
                 <a id="return-values" class="anchor" href="#return-values" aria-hidden="true"><span aria-hidden="true"
                                                                                                     class="octicon octicon-link"></span></a>Return
                 values</h4>
+            <p>
+                The callback function follows the standard nodejs pattern:<br/>
+                <code>callback(error, response);</b>
+            </p>
+            <b>Errors</b>
+            <p>
+                If error is passed, the execution will fail and response is ignored.
+            </p>
 
-            <p>Return values are provided as a <em>flat</em> object, keys cannot be nested.
+            <b>Response</b>
+            <p>
+                The response parameter is optional. If not provided, an empty response will be returned.
+            </p>
+            <p>
+                If provided, the response parameter should be a <em>flat</em> object, keys cannot be nested.
                 If you need to namespace return values from a plugin, use dot.notation in the object keys.
-                These values are referenced using <code>{ "Fn::GetAtt" ["ResourceName", "ReturnValueKey"] }</code></p>
+                These values are referenced using<br/>
+                <code>{ "Fn::GetAtt" ["ResourceName", "ReturnValueKey"] }</code> or
+                <code>{ "Fn::GetAtt" ["DotNotation.ResourceName", "ReturnValueKey"] }</code>
+            </p>
 
             <b>Physical Resource Id</b>
             <p>
