@@ -154,25 +154,29 @@
                 If you need to namespace return values from a plugin, use dot.notation in the object keys.
                 These values are referenced using <code>{ "Fn::GetAtt" ["ResourceName", "ReturnValueKey"] }</code></p>
 
-            <p>If you want to set the PhysicalResourceId of the CustomResource, set
-                <code>response.physicalResourceId</code> to the value you want.
-                If you set the physicalResourceId, this value can be referenced directly via <code>{ "Ref": "ResourceName" }</code></p>
+            <b>Physical Resource Id</b>
+            <p>
+                If you want to set the PhysicalResourceId of the CustomResource, set
+                <code>response.physicalResourceId</code> to the value you want.<br/>
+                If you set the physicalResourceId, this value can be referenced directly via <code>{ "Ref": "ResourceName" }</code><br/>
+                If not set it will default to the value of the log group, a non-sensical value that cannot be used as a reference.                
+            </p>
 
-            <p>Your plugins are expected to run on the <code>nodejs4.3</code> Lambda runtime.</p>
+            <h3>Lambda Runtimes</h3>
+            <p>Your plugins are expected to run on the supported nodejs Lambda runtimes.</p>
 
             <h3>
                 <a id="document-permissions" class="anchor" href="#document-permissions" aria-hidden="true"><span
                         aria-hidden="true" class="octicon octicon-link"></span></a>Document permissions</h3>
 
-            <p>Remember to document any additional IAM permissions that your plugin requires.</p>
+            <p>Document any additional IAM permissions that your plugin requires.</p>
             
             <h3>
                 <a id="dependencies" class="anchor" href="#dependencies" aria-hidden="true"><span
                         aria-hidden="true" class="octicon octicon-link"></span></a>Dependencies</h3>
 
-            <p>Although most of the existing lulo plugins bundle the aws-sdk, the recommendation hence forth is not to do this but let Lambda use what ever version of the sdk it currently ships with.
-               If you need to use a newer version is it fine to bundle it but try to update your plugin once Lambda uses a version that satisifies your requirements.</p>
-            <p>Keeping the plugins small will decrease the cold start time and save money.</p>
+            <p>Do not bundle the aws-sdk, add it to your dev dependencies.</p>
+            <p>Keeping the plugins small will decrease the cold start time.</p>
 
             <h3>
                 <a id="list-your-plugin-here" class="anchor" href="#list-your-plugin-here" aria-hidden="true"><span
