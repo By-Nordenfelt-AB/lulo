@@ -1,4 +1,4 @@
-const log       = require('log4njs').options({ hideDate: true });
+const log       = require('log4njs')();
 const response  = require('./lib/cfn-response');
 const logEvent  = require('./lib/log-event');
 const normalize = require('./lib/normalize');
@@ -29,37 +29,23 @@ Lulo.prototype.register = function (resourceName, resource) {
     return this;
 };
 
-/* eslint global-require: 0 */
 Lulo.prototype.handler = function (event, context, callback) {
     const logResponse = this.logResponse;
     if (this.logEvents) {
         logEvent(event, this.maskedProperties);
     }
 
-    const pluginName = event.ResourceType.split('::')[1];
-    if (!this.plugins[pluginName]) {
-        if (event.RequestType === 'Delete') {
+    let plugin;
+    try {
+        plugin = this.loadPlugin(event);
+        if (plugin === null) {
             return cfnResponse();
         }
-        return cfnResponse(new Error('Unknown resource type: ' + event.ResourceType));
-    }
 
-    log.info('Loading Custom Resource', pluginName);
-    const plugin = this.plugins[pluginName];
-
-    /* istanbul ignore else */
-    if (plugin.schema && typeof plugin.schema) {
-        log.info('Normalizing event using plugin schema', JSON.stringify(plugin.schema));
-        event = normalize(event, plugin.schema);
-        log.info('Event normalized', JSON.stringify(event));
-    }
-
-    if (event.RequestType !== 'Delete') {
-        try {
-            plugin.validate(event);
-        } catch (error) {
-            return cfnResponse(error);
-        }
+        event = this.transformSchema(event, plugin);
+        this.validateInput(event, plugin);
+    } catch (error) {
+        return cfnResponse(error);
     }
 
     switch (event.RequestType) {
@@ -74,4 +60,38 @@ Lulo.prototype.handler = function (event, context, callback) {
     function cfnResponse(error, responseData) {
         response(error, responseData, event, context, logResponse, callback);
     }
+};
+
+Lulo.prototype.loadPlugin = function (event) {
+    // Make sure that the requested plugin exists
+    const pluginName = event.ResourceType.split('::')[1];
+    if (!this.plugins[pluginName]) {
+        log.info('Missing plugin, exiting', pluginName);
+        if (event.RequestType === 'Delete') {
+            log.info('Not causing failure since request is of type delete', pluginName);
+            return null;
+        }
+        log.info('Causing failure since request is not of type delete', pluginName);
+        throw new Error('Unknown resource type: ' + event.ResourceType);
+    }
+
+    log.info('Loading Custom Resource', pluginName);
+    return this.plugins[pluginName];
+};
+
+Lulo.prototype.validateInput = function (event, plugin) {
+    // Validate the input, skip on delete to avoid ending in ROLLBACK_FAILED state
+    if (event.RequestType !== 'Delete') {
+        plugin.validate(event);
+    }
+};
+
+Lulo.prototype.transformSchema = function (event, plugin) {
+    /* istanbul ignore else */
+    if (plugin.schema && typeof plugin.schema) {
+        log.info('Normalizing event using plugin schema', JSON.stringify(plugin.schema));
+        event = normalize(event, plugin.schema);
+        log.info('Event normalized', JSON.stringify(event));
+    }
+    return event;
 };

@@ -4,11 +4,12 @@
     "scripts": {
         "clean": "rm -rf node_modules",
         "lint": "node_modules/.bin/eslint --max-warnings 0 src tests",
-        "test:unit": "LOG_4NJS_LEVEL=suppress nyc --all node_modules/.bin/_mocha ./tests/unit --recursive && nyc report --reporter=html",
+        "test:unit": "LOG_LEVEL=suppress nyc --all node_modules/.bin/_mocha ./tests/unit --recursive && npm run coverage:report",
         "coverage": "nyc check-coverage --statement 100 --branches 100 --functions 100 --lines 100 ",
-        "coverage:report": "nyc report --reporter=text-lcov | coveralls",
+        "coverage:report": "nyc report --reporter=html",
         "test": "npm run lint && npm run test:unit && npm run coverage",
-        "package": "npm run clean && npm i && npm run test && npm publish"
+        "package": "npm run clean && npm i && npm run test && npm publish",
+        "coveralls": "nyc report --reporter=text-lcov | coveralls"
     },
     "main": "src/index.js",
     "repository": {
@@ -30,7 +31,7 @@
     },
     "homepage": "https://github.com/carlnordenfelt/lulo",
     "dependencies": {
-        "log4njs": "^1.0.2"
+        "log4njs": "^2.0.0"
     },
     "devDependencies": {
         "chai": "^4.2.0",

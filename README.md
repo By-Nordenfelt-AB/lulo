@@ -6,12 +6,12 @@
 [![Known Vulnerabilities](https://snyk.io/test/github/carlnordenfelt/lulo/badge.svg?targetFile=package.json)](https://snyk.io/test/github/carlnordenfelt/lulo?targetFile=package.json)
 
 lulo is a tiny plugin based framework for working with AWS CloudFormation Custom Resources.
-The purpose of lulo is to promote reuse of logic written for CustomResources and thus really make AWS CloudFormation as powerful as it can be.
+The purpose of lulo is to promote reuse of logic written for CustomResources.
 
 With just a few lines of code you are ready to use all [published plugins](https://carlnordenfelt.github.io/lulo/plugins.html)
 and if you can't find what you need,
 plugins are easy to write and can be either be published as npm modules
-or be used a plain nodejs modules in your own project.
+or be used a plain nodejs modules exported within your own project.
 
 The goal is of course to build a substantial plugin repository so please, contribute! :)
 

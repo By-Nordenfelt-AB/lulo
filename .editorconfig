@@ -9,11 +9,7 @@ charset = utf-8
 trim_trailing_whitespace = true
 max_line_length = 180
 
-[*.mk]
-indent_style = tab
-tab_width = 4
-
-[.eslintrc]
+[.eslintrc.json]
 indent_size = 4
 
 [package.json]

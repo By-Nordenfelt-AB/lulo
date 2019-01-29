@@ -7,7 +7,7 @@
  See the License for the specific language governing permissions and limitations under the License.
  */
 /* istanbul ignore file */
-const log   = require('log4njs');
+const log       = require('log4njs')();
 const https = require('https');
 const url   = require('url');
 

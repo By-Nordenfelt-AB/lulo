@@ -1,12 +1,12 @@
 /**
  * Cloudformation automatically casts all property values to string which
- * is not always accepted by the nodejs sdk for other types suh as integers and booleans.
+ * is not always accepted by the nodejs sdk for other types such as integers and booleans.
  * This module provides the means to define a simple schema for type casting of
  * primitive types back to their original type.
  * Supported types are boolean, integer and numeric (integer or float).
  * It handles nested properties as well as array properties.
  */
-const log = require('log4njs').options({ hideDate: true });
+const log = require('log4njs')();
 
 module.exports = function (event, schema) {
     event.ResourceProperties = normalize(event.ResourceProperties, schema);

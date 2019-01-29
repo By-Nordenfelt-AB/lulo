@@ -1,3 +1,7 @@
+## 3.1.0
+* Refactoring and code clean up
+* Updated dependencies
+
 ## 3.0.0
 * Added support for NoEcho in response. See https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/crpg-ref-responses.html
 * `_NoEcho` is now a reserved property and cannot be used by plugins.

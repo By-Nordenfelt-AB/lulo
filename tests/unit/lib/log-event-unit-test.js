@@ -13,12 +13,11 @@ describe('Logger unit tests', () => {
             warnOnUnregistered: false
         });
 
-        const logMock = {
-            info: infoStub,
-            options: function () {
-                return logMock;
-            }
-        };
+        function logMock() {
+            return {
+                info: infoStub
+            };
+        }
 
         mockery.registerMock('log4njs', logMock);
         subject = require('../../../src/lib/log-event');
@@ -34,11 +33,11 @@ describe('Logger unit tests', () => {
         event = {
             ResourceProperties: {
                 password: 'password',
-                otherField: 'otherField'
+                otherField1: 'otherField1'
             },
             OldResourceProperties: {
                 password: 'password',
-                otherField: 'otherField'
+                otherField2: 'otherField2'
             }
         };
     });
@@ -48,28 +47,39 @@ describe('Logger unit tests', () => {
             subject(event, []);
             const logEvent = JSON.parse(infoStub.getCalls(0)[0].proxy.args[0][1]);
             expect(logEvent.ResourceProperties.password).to.equal('password');
-            expect(logEvent.ResourceProperties.otherField).to.equal('otherField');
+            expect(logEvent.ResourceProperties.otherField1).to.equal('otherField1');
             expect(logEvent.OldResourceProperties.password).to.equal('password');
-            expect(logEvent.OldResourceProperties.otherField).to.equal('otherField');
+            expect(logEvent.OldResourceProperties.otherField2).to.equal('otherField2');
             done();
         });
         it('Should log event and mask password property', (done) => {
             subject(event, ['password']);
             const logEvent = JSON.parse(infoStub.getCalls(0)[0].proxy.args[0][1]);
             expect(logEvent.ResourceProperties.password).to.equal('****masked****');
-            expect(logEvent.ResourceProperties.otherField).to.equal('otherField');
+            expect(logEvent.ResourceProperties.otherField1).to.equal('otherField1');
             expect(logEvent.OldResourceProperties.password).to.equal('****masked****');
-            expect(logEvent.OldResourceProperties.otherField).to.equal('otherField');
+            expect(logEvent.OldResourceProperties.otherField2).to.equal('otherField2');
             done();
         });
 
-        it('Coverage...', (done) => {
+        it('No ResourceProperties', (done) => {
             delete event.ResourceProperties;
-            delete event.OldResourceProperties;
 
             subject(event);
             const logEvent = JSON.parse(infoStub.getCalls(0)[0].proxy.args[0][1]);
             expect(logEvent.ResourceProperties).to.equal(undefined);
+            expect(logEvent.OldResourceProperties.password).to.equal('password');
+            expect(logEvent.OldResourceProperties.otherField2).to.equal('otherField2');
+            done();
+        });
+
+        it('No OldResourceProperties', (done) => {
+            delete event.OldResourceProperties;
+
+            subject(event);
+            const logEvent = JSON.parse(infoStub.getCalls(0)[0].proxy.args[0][1]);
+            expect(logEvent.ResourceProperties.password).to.equal('password');
+            expect(logEvent.ResourceProperties.otherField1).to.equal('otherField1');
             expect(logEvent.OldResourceProperties).to.equal(undefined);
             done();
         });
