@@ -1,4 +1,4 @@
-## 3.1.0
+## 3.1.0 - Upcoming
 * Refactoring and code clean up
 * Updated dependencies
 
