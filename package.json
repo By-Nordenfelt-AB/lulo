@@ -31,18 +31,18 @@
     },
     "homepage": "https://github.com/carlnordenfelt/lulo",
     "dependencies": {
-        "log4njs": "^2.0.0"
+        "log4njs": "^2.2.1"
     },
     "devDependencies": {
         "chai": "^4.2.0",
-        "eslint": "5.9.0",
+        "coveralls": "^3.0.4",
+        "eslint": "^5.16.0",
         "eslint-config-defaults": "9.0.0",
         "eslint-plugin-filenames": "1.3.2",
         "eslint-plugin-import": "2.14.0",
         "mocha": "^5.2.0",
         "mockery": "^2.1.0",
-        "sinon": "^7.1.1",
         "nyc": "^13.1.0",
-        "coveralls": "^3.0.2"
+        "sinon": "^7.3.2"
     }
 }
