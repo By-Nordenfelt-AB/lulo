@@ -112,7 +112,7 @@ describe('Index unit tests', () => {
         });
         it('Update should succeed, with config overrides', (done) => {
             subject()
-                .register('Plugin', require('plugin'), { logEvents: true, logResponse: true, maskedProperties: [] }) // eslint-disable-line import/no-extraneous-dependencies
+                .register('Plugin', require('plugin'), { logEvents: true, logResponse: true, maskedProperties: [] }) // eslint-disable-line import/no-extraneous-dependencies, max-len
                 .handler({ RequestType: 'Update', ResourceType: 'Custom::Plugin' }, {}, () => {
                     expect(logEventStub.called).to.equal(true);
                     expect(responseStub.calledOnce).to.equal(true);
