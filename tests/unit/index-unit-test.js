@@ -1,23 +1,23 @@
-const expect  = require('chai').expect;
+const expect = require('chai').expect;
 const mockery = require('mockery');
-const sinon   = require('sinon');
+const sinon = require('sinon');
 
 describe('Index unit tests', () => {
     let subject;
     let event;
-    const responseStub  = sinon.stub();
-    const validateStub  = sinon.stub();
-    const createStub    = sinon.stub();
-    const updateStub    = sinon.stub();
-    const deleteStub    = sinon.stub();
-    const logStub       = sinon.stub();
-    const logEventStub  = sinon.stub();
+    const responseStub = sinon.stub();
+    const validateStub = sinon.stub();
+    const createStub = sinon.stub();
+    const updateStub = sinon.stub();
+    const deleteStub = sinon.stub();
+    const logStub = sinon.stub();
+    const logEventStub = sinon.stub();
     const normalizeStub = sinon.stub();
 
     before(() => {
         mockery.enable({
             useCleanCache: true,
-            warnOnUnregistered: false
+            warnOnUnregistered: false,
         });
 
         const pluginMock = {
@@ -25,7 +25,7 @@ describe('Index unit tests', () => {
             schema: {},
             create: createStub,
             update: updateStub,
-            delete: deleteStub
+            delete: deleteStub,
         };
 
         mockery.registerMock('./lib/cfn-response', responseStub);
@@ -55,11 +55,11 @@ describe('Index unit tests', () => {
             RequestType: 'Create',
             ResourceType: 'Custom::Plugin',
             ResourceProperties: {
-                Property: 'test'
+                Property: 'test',
             },
             OldResourceProperties: {
-                OldProperty: 'test2'
-            }
+                OldProperty: 'test2',
+            },
         };
     });
     after(() => {
@@ -102,7 +102,7 @@ describe('Index unit tests', () => {
                     expect(logEventStub.calledOnce).to.equal(true);
                     expect(responseStub.calledOnce).to.equal(true);
                     expect(responseStub.calledWith(null, sinon.match.has('success', true), sinon.match.object,
-                        sinon.match.object, sinon.match.boolean, sinon.match.func)).to.equal(true);
+                        sinon.match.object, sinon.match.bool, sinon.match.func)).to.equal(true);
                     expect(validateStub.calledOnce).to.equal(true);
                     expect(createStub.calledOnce).to.equal(true);
                     expect(deleteStub.called).to.equal(false);
@@ -110,14 +110,14 @@ describe('Index unit tests', () => {
                     done();
                 });
         });
-        it('Update should succeed', (done) => {
+        it('Update should succeed, with config overrides', (done) => {
             subject()
-                .register('Plugin', require('plugin')) // eslint-disable-line import/no-extraneous-dependencies
+                .register('Plugin', require('plugin'), { logEvents: true, logResponse: true, maskedProperties: [] }) // eslint-disable-line import/no-extraneous-dependencies
                 .handler({ RequestType: 'Update', ResourceType: 'Custom::Plugin' }, {}, () => {
-                    expect(logEventStub.called).to.equal(false);
+                    expect(logEventStub.called).to.equal(true);
                     expect(responseStub.calledOnce).to.equal(true);
                     expect(responseStub.calledWith(null, sinon.match.has('success', true), sinon.match.object,
-                        sinon.match.object, sinon.match.boolean, sinon.match.func)).to.equal(true);
+                        sinon.match.object, sinon.match.bool, sinon.match.func)).to.equal(true);
                     expect(validateStub.calledOnce).to.equal(true);
                     expect(createStub.called).to.equal(false);
                     expect(deleteStub.called).to.equal(false);
@@ -131,7 +131,7 @@ describe('Index unit tests', () => {
                 .handler({ RequestType: 'Delete', ResourceType: 'Custom::Plugin' }, {}, () => {
                     expect(responseStub.calledOnce).to.equal(true);
                     expect(responseStub.calledWith(null, sinon.match.has('success', true), sinon.match.object,
-                        sinon.match.object, sinon.match.boolean, sinon.match.func)).to.equal(true);
+                        sinon.match.object, sinon.match.bool, sinon.match.func)).to.equal(true);
                     expect(validateStub.calledOnce).to.equal(false);
                     expect(createStub.called).to.equal(false);
                     expect(deleteStub.calledOnce).to.equal(true);
@@ -145,7 +145,7 @@ describe('Index unit tests', () => {
                 .handler({ RequestType: 'Create', ResourceType: 'Custom::BadPlugin' }, {}, () => {
                     expect(responseStub.calledOnce).to.equal(true);
                     expect(responseStub.calledWith(sinon.match.has('message'), undefined, sinon.match.object,
-                        sinon.match.object, sinon.match.boolean, sinon.match.func)).to.equal(true);
+                        sinon.match.object, sinon.match.bool, sinon.match.func)).to.equal(true);
                     expect(validateStub.called).to.equal(false);
                     expect(createStub.called).to.equal(false);
                     expect(deleteStub.called).to.equal(false);
@@ -159,7 +159,7 @@ describe('Index unit tests', () => {
                 .handler({ RequestType: 'Delete', ResourceType: 'Custom::BadPlugin' }, {}, () => {
                     expect(responseStub.calledOnce).to.equal(true);
                     expect(responseStub.calledWith(undefined, undefined, sinon.match.object, sinon.match.object,
-                        sinon.match.boolean, sinon.match.func)).to.equal(true);
+                        sinon.match.bool, sinon.match.func)).to.equal(true);
                     expect(validateStub.called).to.equal(false);
                     expect(createStub.called).to.equal(false);
                     expect(deleteStub.called).to.equal(false);
@@ -174,7 +174,7 @@ describe('Index unit tests', () => {
                 .handler({ RequestType: 'Create', ResourceType: 'Custom::Plugin' }, {}, () => {
                     expect(responseStub.calledOnce).to.equal(true);
                     expect(responseStub.calledWith(sinon.match.has('name', 'Error'), undefined, sinon.match.object,
-                        sinon.match.object, sinon.match.boolean, sinon.match.func)).to.equal(true);
+                        sinon.match.object, sinon.match.bool, sinon.match.func)).to.equal(true);
                     expect(validateStub.calledOnce).to.equal(true);
                     expect(createStub.called).to.equal(false);
                     expect(deleteStub.called).to.equal(false);

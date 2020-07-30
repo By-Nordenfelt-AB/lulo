@@ -13,7 +13,7 @@ and if you can't find what you need,
 plugins are easy to write and can be either be published as npm modules
 or be used a plain nodejs modules exported within your own project.
 
-The goal is of course to build a substantial plugin repository so please, contribute! :)
+The goal is of course to build a substantial plugin repository so please, contribute!
 
 ## Installation
 ```

@@ -1,0 +1,59 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Parameters:
+    PackageKey:
+        Type: 'String'
+        Description: 'S3 location of Zip file containing index.js and node_modules'
+    PackageBucket:
+        Type: 'String'
+        Description: 'Bucket Zip file can be found'
+    TargetStackName:
+        Type: 'String'
+        Description: 'Name or ID of the stack you want to describe'
+    ParameterName:
+        Type: 'String'
+        Description: 'Name of the parameter value you want to output from the stack'
+Resources:
+    LuloFunctionRole:
+        Type: 'AWS::IAM::Role'
+        Properties:
+            AssumeRolePolicyDocument:
+                Version: '2012-10-17'
+                Statement:
+                    -   Effect: 'Allow'
+                        Principal:
+                            Service: 'lambda.amazonaws.com'
+                        Action: 'sts:AssumeRole'
+            Policies:
+                -   PolicyName: 'LambdaPermissions'
+                    PolicyDocument:
+                        Version: '2012-10-17'
+                        Statement:
+                            -   Sid: 'lulo-plugin-stack-properties'
+                                Action:
+                                    - 'cloudformation:DescribeStacks'
+                                    - 'cloudformation:ListStackResources'
+                                Effect: 'Allow'
+                                Resource: '*'
+            ManagedPolicyArns:
+                - 'arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole'
+    LuloFunction:
+        Type: 'AWS::Lambda::Function'
+        Properties:
+            FunctionName: 'Lulo'
+            Code:
+                S3Bucket: !Ref 'PackageBucket'
+                S3Key: !Ref 'PackageKey'
+            Handler: 'index.handler'
+            Runtime: 'nodejs12.x'
+            Timeout: 300
+            Role: !GetAtt 'LuloFunctionRole.Arn'
+    LuloPluginTest:
+        Type: 'Custom::StackProperties'
+        Properties:
+            ServiceToken: !GetAtt 'LuloFunction.Arn'
+            StackName: !Ref 'TargetStackName'
+
+Outputs:
+    ExampleParameter:
+        Value: !GetAtt ['LuloPluginTest', !Sub 'Parameter.${ParameterName}']
+

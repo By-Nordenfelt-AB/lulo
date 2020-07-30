@@ -7,23 +7,23 @@
  See the License for the specific language governing permissions and limitations under the License.
  */
 /* istanbul ignore file */
-const log       = require('log4njs')();
+const log = require('log4njs')();
 const https = require('https');
-const url   = require('url');
+const url = require('url');
 
 const SUCCESS = 'SUCCESS';
-const FAILED  = 'FAILED';
+const FAILED = 'FAILED';
 
 /* eslint max-params: 0 */
 module.exports = (error, response, event, context, logResponse, callback) => {
     let responseStatus = SUCCESS;
-    let responseData   = response;
+    let responseData = response;
     let responseReason = '';
 
     if (error) {
         responseStatus = FAILED;
-        responseData   = {
-            error: error.toString()
+        responseData = {
+            error: error.toString(),
         };
         responseReason = responseData.error + '. ';
     } else if (!responseData) {
@@ -40,19 +40,19 @@ module.exports = (error, response, event, context, logResponse, callback) => {
         RequestId: event.RequestId,
         LogicalResourceId: event.LogicalResourceId,
         Data: responseData,
-        NoEcho: !!event.ResourceProperties._NoEcho
+        NoEcho: !!event.ResourceProperties._NoEcho,
     });
 
     const parsedUrl = url.parse(event.ResponseURL);
-    const options   = {
+    const options = {
         hostname: parsedUrl.hostname,
         port: 443,
         path: parsedUrl.path,
         method: 'PUT',
         headers: {
             'content-type': '',
-            'content-length': requestBody.length
-        }
+            'content-length': requestBody.length,
+        },
     };
 
     if (logResponse) {
