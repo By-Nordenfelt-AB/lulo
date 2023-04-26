@@ -1,8 +1,9 @@
 AWSTemplateFormatVersion: '2010-09-09'
+Transform: ['AWS::Serverless-2016-10-31']
 Parameters:
     PackageKey:
         Type: 'String'
-        Description: 'S3 location of Zip file containing index.ts and node_modules'
+        Description: 'S3 location of Zip file containing index.js and node_modules'
     PackageBucket:
         Type: 'String'
         Description: 'Bucket Zip file can be found'

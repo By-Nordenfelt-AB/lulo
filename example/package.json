@@ -11,7 +11,7 @@
         "package": "zip package.zip -r node_modules package.json src"
     },
     "dependencies": {
-        "lulo": "*",
+        "lulo": "4.0.0-beta1",
         "lulo-plugin-stack-properties": "*"
     }
 }

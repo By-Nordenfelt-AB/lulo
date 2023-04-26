@@ -4,15 +4,15 @@ describe('Index unit tests', () => {
     let subject: typeof import('../index');
     let event: any;
 
-    const validateStub = jest.fn();
-    const createStub = jest.fn();
-    const updateStub = jest.fn();
-    const deleteStub = jest.fn();
+    const validateEventStub = jest.fn();
+    const createResourceStub = jest.fn();
+    const updateResourceStub = jest.fn();
+    const deleteResourceStub = jest.fn();
     const pluginMock = {
-        validate: validateStub,
-        create: createStub,
-        update: updateStub,
-        delete: deleteStub,
+        validateEvent: validateEventStub,
+        createResource: createResourceStub,
+        updateResource: updateResourceStub,
+        deleteResource: deleteResourceStub,
     };
     const contextMock = {
         awsRequestId: 'awsRequestId',
@@ -186,10 +186,10 @@ describe('Index unit tests', () => {
             expect(logEventStub).toHaveBeenCalledTimes(1);
             expect(responseSuccessStub).toHaveBeenCalledTimes(1);
             expect(responseSuccessStub).toBeCalledWith(event, contextMock, false, undefined);
-            expect(validateStub).toHaveBeenCalledTimes(1);
-            expect(createStub).toHaveBeenCalledTimes(1);
-            expect(updateStub).toHaveBeenCalledTimes(0);
-            expect(deleteStub).toHaveBeenCalledTimes(0);
+            expect(validateEventStub).toHaveBeenCalledTimes(1);
+            expect(createResourceStub).toHaveBeenCalledTimes(1);
+            expect(updateResourceStub).toHaveBeenCalledTimes(0);
+            expect(deleteResourceStub).toHaveBeenCalledTimes(0);
         });
 
         it('Update should succeed, with plugin specific configuration', async () => {
@@ -202,10 +202,10 @@ describe('Index unit tests', () => {
             expect(logEventStub).toHaveBeenCalledTimes(0);
             expect(responseSuccessStub).toHaveBeenCalledTimes(1);
             expect(responseSuccessStub).toBeCalledWith(event, contextMock, false, undefined);
-            expect(validateStub).toHaveBeenCalledTimes(1);
-            expect(createStub).toHaveBeenCalledTimes(0);
-            expect(updateStub).toHaveBeenCalledTimes(1);
-            expect(deleteStub).toHaveBeenCalledTimes(0);
+            expect(validateEventStub).toHaveBeenCalledTimes(1);
+            expect(createResourceStub).toHaveBeenCalledTimes(0);
+            expect(updateResourceStub).toHaveBeenCalledTimes(1);
+            expect(deleteResourceStub).toHaveBeenCalledTimes(0);
         });
 
         it('Delete should succeed', async () => {
@@ -218,10 +218,10 @@ describe('Index unit tests', () => {
             expect(logEventStub).toHaveBeenCalledTimes(0);
             expect(responseSuccessStub).toHaveBeenCalledTimes(1);
             expect(responseSuccessStub).toBeCalledWith(event, contextMock, false, undefined);
-            expect(validateStub).toHaveBeenCalledTimes(0);
-            expect(createStub).toHaveBeenCalledTimes(0);
-            expect(updateStub).toHaveBeenCalledTimes(0);
-            expect(deleteStub).toHaveBeenCalledTimes(1);
+            expect(validateEventStub).toHaveBeenCalledTimes(0);
+            expect(createResourceStub).toHaveBeenCalledTimes(0);
+            expect(updateResourceStub).toHaveBeenCalledTimes(0);
+            expect(deleteResourceStub).toHaveBeenCalledTimes(1);
         });
     });
 
@@ -235,10 +235,10 @@ describe('Index unit tests', () => {
             expect(responseSuccessStub).toHaveBeenCalledTimes(0);
             expect(responseErrorStub).toHaveBeenCalledTimes(1);
             expect(responseErrorStub).toBeCalledWith(event, contextMock, false, new Error('Unknown resource type: Custom::BadPlugin'));
-            expect(validateStub).toHaveBeenCalledTimes(0);
-            expect(createStub).toHaveBeenCalledTimes(0);
-            expect(updateStub).toHaveBeenCalledTimes(0);
-            expect(deleteStub).toHaveBeenCalledTimes(0);
+            expect(validateEventStub).toHaveBeenCalledTimes(0);
+            expect(createResourceStub).toHaveBeenCalledTimes(0);
+            expect(updateResourceStub).toHaveBeenCalledTimes(0);
+            expect(deleteResourceStub).toHaveBeenCalledTimes(0);
         });
 
         it('Should not fail if plugin does not exist on delete', async () => {
@@ -251,14 +251,14 @@ describe('Index unit tests', () => {
             expect(responseSuccessStub).toHaveBeenCalledTimes(1);
             expect(responseSuccessStub).toBeCalledWith(event, contextMock, false);
             expect(responseErrorStub).toHaveBeenCalledTimes(0);
-            expect(validateStub).toHaveBeenCalledTimes(0);
-            expect(createStub).toHaveBeenCalledTimes(0);
-            expect(updateStub).toHaveBeenCalledTimes(0);
-            expect(deleteStub).toHaveBeenCalledTimes(0);
+            expect(validateEventStub).toHaveBeenCalledTimes(0);
+            expect(createResourceStub).toHaveBeenCalledTimes(0);
+            expect(updateResourceStub).toHaveBeenCalledTimes(0);
+            expect(deleteResourceStub).toHaveBeenCalledTimes(0);
         });
 
         it('Should fail if plugin.validate throws error', async () => {
-            validateStub.mockRejectedValueOnce(new Error('Validation Error'));
+            validateEventStub.mockRejectedValueOnce(new Error('Validation Error'));
             await new subject.Lulo()
                 .register('PluginName', pluginMock)
                 .handler(event, contextMock);
@@ -266,10 +266,10 @@ describe('Index unit tests', () => {
             expect(responseSuccessStub).toHaveBeenCalledTimes(0);
             expect(responseErrorStub).toHaveBeenCalledTimes(1);
             expect(responseErrorStub).toBeCalledWith(event, contextMock, false, new Error('Validation Error'));
-            expect(validateStub).toHaveBeenCalledTimes(1);
-            expect(createStub).toHaveBeenCalledTimes(0);
-            expect(updateStub).toHaveBeenCalledTimes(0);
-            expect(deleteStub).toHaveBeenCalledTimes(0);
+            expect(validateEventStub).toHaveBeenCalledTimes(1);
+            expect(createResourceStub).toHaveBeenCalledTimes(0);
+            expect(updateResourceStub).toHaveBeenCalledTimes(0);
+            expect(deleteResourceStub).toHaveBeenCalledTimes(0);
         });
     });
 });

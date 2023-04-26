@@ -23,7 +23,7 @@ For more information and a listing of all plugins, [visit the project page](http
 A complete example implementation can be found [here](https://github.com/carlnordenfelt/lulo/tree/master/example)
 
 ## Writing plugins
-A write up on [how to write plugins](https://carlnordenfelt.github.io/lulo/writing-plugins.html) can also be found at the project page.
+A write-up on [how to write plugins](https://carlnordenfelt.github.io/lulo/writing-plugins.html) can also be found at the project page.
 
 ## Why Lulo?
 Because it's a [very healthy fruit](https://en.wikipedia.org/wiki/Solanum_quitoense) :)

@@ -1,9 +1,9 @@
 /* istanbul ignore file */
 const Lulo = require('lulo');
 
-const lulo = Lulo({ logEvents: true, logResponse: true })
-    .register('StackProperties', require('lulo-plugin-stack-properties'));
+const lulo = new Lulo.Lulo({ logEvent: true, logResponse: true })
+    .register('StackProperties', { plugin: require('lulo-plugin-stack-properties') });
 
-exports.handler = (event, context, callback) => {
-    lulo.handler(event, context, callback);
+exports.handler = async (event, context) => {
+    await lulo.handler(event, context);
 };

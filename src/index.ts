@@ -1,4 +1,10 @@
-import { CloudFormationCustomResourceEvent, Context } from 'aws-lambda';
+import {
+    CloudFormationCustomResourceCreateEvent,
+    CloudFormationCustomResourceDeleteEvent,
+    CloudFormationCustomResourceEvent,
+    CloudFormationCustomResourceUpdateEvent,
+    Context,
+} from 'aws-lambda';
 import { getLogger } from 'log4njs';
 import { logEvent } from './lib/log-event';
 import { normalize } from './lib/normalize';
@@ -14,10 +20,10 @@ type LuloOptions = {
 
 type LuloPluginOptions = Partial<LuloOptions>;
 type LuloPlugin = {
-    validate?: (event: CloudFormationCustomResourceEvent) => void,
-    create: (event: CloudFormationCustomResourceEvent, context: Context) => any,
-    update: (event: CloudFormationCustomResourceEvent, context: Context) => any,
-    delete: (event: CloudFormationCustomResourceEvent, context: Context) => any,
+    validateEvent?: (event: CloudFormationCustomResourceEvent) => void,
+    createResource: (event: CloudFormationCustomResourceCreateEvent, context: Context) => any,
+    updateResource: (event: CloudFormationCustomResourceUpdateEvent, context: Context) => any,
+    deleteResource: (event: CloudFormationCustomResourceDeleteEvent, context: Context) => any,
     schema?: object
 };
 type LuloPluginConfig = { plugin: LuloPlugin, options?: LuloPluginOptions };
@@ -72,13 +78,13 @@ export class Lulo {
             let pluginResponseData;
             switch (event.RequestType) {
                 case 'Create':
-                    pluginResponseData = await pluginConfig.plugin.create(event, context);
+                    pluginResponseData = await pluginConfig.plugin.createResource(event, context);
                     break;
                 case 'Delete':
-                    pluginResponseData = await pluginConfig.plugin.delete(event, context);
+                    pluginResponseData = await pluginConfig.plugin.deleteResource(event, context);
                     break;
                 default:
-                    pluginResponseData = await pluginConfig.plugin.update(event, context);
+                    pluginResponseData = await pluginConfig.plugin.updateResource(event, context);
                     break;
             }
 
@@ -113,8 +119,8 @@ export class Lulo {
      * @private
      */
     private async _validateInput(event: CloudFormationCustomResourceEvent, pluginConfig: LuloPluginConfig) {
-        if (event.RequestType !== 'Delete' && pluginConfig.plugin.validate) {
-            await pluginConfig.plugin.validate(event);
+        if (event.RequestType !== 'Delete' && pluginConfig.plugin.validateEvent) {
+            await pluginConfig.plugin.validateEvent(event);
         }
     }
 
