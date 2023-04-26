@@ -1,0 +1,6 @@
+{
+    "extends": ["tslint:recommended", "tslint-config-prettier"],
+    "rules": {
+        "whitespace": [true, "check-module"]
+    }
+}
