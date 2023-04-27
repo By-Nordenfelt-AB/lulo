@@ -1,9 +1,7 @@
 # lulo
 
 [![npm version](https://badge.fury.io/js/lulo.svg)](https://badge.fury.io/js/lulo)
-[![Build Status](https://travis-ci.org/carlnordenfelt/lulo.svg?branch=master)](https://travis-ci.org/carlnordenfelt/lulo)
-[![Coverage Status](https://coveralls.io/repos/github/carlnordenfelt/lulo/badge.svg?branch=master)](https://coveralls.io/github/carlnordenfelt/lulo?branch=master)
-[![Known Vulnerabilities](https://snyk.io/test/github/carlnordenfelt/lulo/badge.svg?targetFile=package.json)](https://snyk.io/test/github/carlnordenfelt/lulo?targetFile=package.json)
+![Build Status](https://github.com/By-Nordenfelt-AB/lulo/actions/workflows/main.yml/badge.svg)
 
 lulo is a tiny plugin based framework for working with AWS CloudFormation Custom Resources.
 The purpose of lulo is to promote reuse of logic written for CustomResources.
