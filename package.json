@@ -1,7 +1,6 @@
 {
     "name": "lulo",
-    "version": "4.0.0-beta4",
-    "type": "module",
+    "version": "4.0.0-beta5",
     "main": ".dist/index.js",
     "types": ".dist/index.d.ts",
     "scripts": {
