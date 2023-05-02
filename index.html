@@ -9,11 +9,7 @@
     <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
     <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print">
 
-    <!--[if lt IE 9]>
-    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
-
-    <title>Lulo by carlnordenfelt</title>
+    <title>Lulo by Nordenfelt</title>
 </head>
 
 <body>
@@ -21,9 +17,9 @@
     <div class="inner">
         <h1>Lulo</h1>
         <h2>A plugin engine for AWS CloudFormation Custom Resources</h2>
-        <a href="https://github.com/carlnordenfelt/lulo" class="button"><small>View project on</small> GitHub</a>
-      </div>
-    </header>
+        <a href="https://github.com/By-Nordenfelt-AB/lulo" class="button"><small>View project on</small> GitHub</a>
+    </div>
+</header>
 
 <div id="content-wrapper">
     <div class="inner clearfix">
@@ -33,7 +29,7 @@
                                                                                   class="octicon octicon-link"></span></a>lulo
             </h1>
 
-            <p>lulo is a tiny plugin based framework for working with 
+            <p>lulo is a tiny plugin based framework for working with
                 <a href="http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/template-custom-resources.html">AWS CloudFormation Custom Resources</a>.
                 lulo itself doesn't do much but is easily extended by registering plugins.
             </p>
@@ -43,7 +39,7 @@
                                                                                                   class="octicon octicon-link"></span></a>Installation
             </h2>
 
-<pre><code>$ npm install lulo --save
+            <pre><code>$ npm install lulo --save
 </code></pre>
 
             <h2>
@@ -58,7 +54,7 @@
             <h3>Contribute Plugins</h3>
             <p>
                 Want to contribute with your own plugins?
-                Check out the <a href="https://carlnordenfelt.github.io/lulo/writing-plugins.html">How to write plugins page</a>
+                Check out the <a href="https://by-nordenfelt-ab.github.io/lulo/writing-plugins.html">How to write plugins page</a>
             </p>
             <h2>
                 <a id="usage" class="anchor" href="#usage" aria-hidden="true"><span aria-hidden="true"
@@ -69,90 +65,81 @@
                 <a id="example-lambda-indexjs" class="anchor" href="#example-lambda-indexjs" aria-hidden="true"><span
                         aria-hidden="true" class="octicon octicon-link"></span></a>Example Lambda index.js</h3>
 
-            <div class="highlight highlight-source-js"><pre><span class="pl-s"><span
-                    class="pl-pds">'</span>use strict<span class="pl-pds">'</span></span>;
+            <div class="highlight highlight-source-js">
+                <pre><code>import { Lulo } from 'lulo';
+import { CloudFormationCustomResourceEvent, Context } from 'aws-lambda';
+import * as myPlugin from 'my-plugin';
 
-<span class="pl-k">var</span> Lulo <span class="pl-k">=</span> <span class="pl-c1">require</span>(<span
-                        class="pl-s"><span class="pl-pds">'</span>lulo<span class="pl-pds">'</span></span>);
-<span class="pl-k">var</span> lulo <span class="pl-k">=</span> <span class="pl-en">Lulo</span>({ logEvents<span
-                        class="pl-k">:</span> <span class="pl-c1">true</span>, logResponse<span
-                        class="pl-k">:</span> <span class="pl-c1">true</span> })
-    .<span class="pl-en">register</span>(<span class="pl-s"><span class="pl-pds">'</span>PluginNameSpace<span
-                        class="pl-pds">'</span></span>, <span class="pl-c1">require</span>(<span class="pl-s"><span
-                        class="pl-pds">'</span>lulo-plugin-name<span class="pl-pds">'</span></span>))
-    .<span class="pl-en">register</span>(<span class="pl-s"><span class="pl-pds">'</span>AnotherPluginNameSpace<span
-                        class="pl-pds">'</span></span>, <span class="pl-c1">require</span>(<span class="pl-s"><span
-                        class="pl-pds">'</span>lulo-plugin-name-2<span class="pl-pds">'</span></span>));
+const lulo = new Lulo()
+    .register('MyPlugin', myPlugin);
 
-<span class="pl-c1">exports</span>.<span class="pl-en">handler</span> <span class="pl-k">=</span> <span class="pl-k">function</span> (<span
-                        class="pl-c1">event</span>, <span class="pl-smi">context</span>, <span
-                        class="pl-smi">callback</span>) {
-    <span class="pl-smi">lulo</span>.<span class="pl-en">handler</span>(<span class="pl-c1">event</span>, context, callback);
-};</pre>
+export async function handler(event: CloudFormationCustomResourceEvent, context: Context): Promise&lt;void&gt; {
+    await lulo.handler(event, context);
+}</code></pre>
             </div>
 
-            <p>(Yes, that is all the nodejs code you have to write)</p>
+            <p>Package your index.ts and node_modules and deploy to Lambda (nodejs18.x runtime or later).</p>
 
-            <p>Package your index.js and node_modules and deploy to Lambda (nodejs6.10 runtime or later).</p>
-
-            <h4><a id="aws-cloudformation-template" class="anchor" href="#aws-cloudformation-template"
-                   aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Configuration
+            <h4>
+                <a id="configuration" class="anchor" href="#aws-cloudformation-template" aria-hidden="true">
+                    <span aria-hidden="true" class="octicon octicon-link"></span>
+                </a>
+                Configuration
             </h4>
             <p>Lulo offers a small set of configuration parameters:</p>
             <ul>
-                <li>logEvents: Set to true if you want to log the incoming Lambda event to CloudWatch Logs</li>
-                <li>logResponse: Set to true if you want to log the outgoing CloudFormation response to CloudWatch Logs</li>
-                <li>maskedProperties: Array or property names that you want masked when logging events. Note that these do not apply to the response logging.</li>
+                <li><b>logEvent:</b> Set to true if you want to log the incoming Lambda event to CloudWatch Logs</li>
+                <li><b>logResponse:</b> Set to true if you want to log the outgoing CloudFormation response to CloudWatch Logs</li>
+                <li><b>maskedProperties:</b> Array or property names that you want masked when logging events. Note that these do not apply to the response logging.</li>
             </ul>
 
             <h3>
-                <a id="aws-cloudformation-template" class="anchor" href="#aws-cloudformation-template"
-                   aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>AWS
-                CloudFormation template</h3>
+                <a id="aws-cloudformation-template" class="anchor" href="#aws-cloudformation-template" aria-hidden="true">
+                    <span aria-hidden="true" class="octicon octicon-link"></span>
+                </a>
+                AWS CloudFormation template
+            </h3>
 
-            <div class="highlight highlight-source-js"><pre>{
-    <span class="pl-s"><span class="pl-pds">"</span>MyCustomResourceName<span class="pl-pds">"</span></span><span
-                        class="pl-k">:</span> {
-        <span class="pl-s"><span class="pl-pds">"</span>Type<span class="pl-pds">"</span></span><span
-                        class="pl-k">:</span> <span class="pl-s"><span
-                        class="pl-pds">"</span>Custom::PluginNameSpace<span class="pl-pds">"</span></span>,
-        <span class="pl-s"><span class="pl-pds">"</span>Properties<span class="pl-pds">"</span></span><span
-                        class="pl-k">:</span> {
-            <span class="pl-s"><span class="pl-pds">"</span>ServiceToken<span class="pl-pds">"</span></span><span
-                        class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">"</span>{LAMBDA_ARN}<span
-                        class="pl-pds">"</span></span>,
-            <span class="pl-k">...</span>
+            <div class="highlight highlight-source-js">
+                <pre><code>{
+    "MyCustomResourceName": {
+        "Type": "Custom::PluginNameSpace",
+        "Properties": {
+            "ServiceToken": "{LAMBDA_ARN}",
+            ...
         }
     },
-    <span class="pl-s"><span class="pl-pds">"</span>MyOtherCustomResourceName<span class="pl-pds">"</span></span><span
-                        class="pl-k">:</span> {
-        <span class="pl-s"><span class="pl-pds">"</span>Type<span class="pl-pds">"</span></span><span
-                        class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">"</span>Custom::AnotherPluginNameSpace<span
-                        class="pl-pds">"</span></span>,
-        <span class="pl-s"><span class="pl-pds">"</span>Properties<span class="pl-pds">"</span></span><span
-                        class="pl-k">:</span> {
-            <span class="pl-s"><span class="pl-pds">"</span>ServiceToken<span class="pl-pds">"</span></span><span
-                        class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">"</span>{LAMBDA_ARN}<span
-                        class="pl-pds">"</span></span>,
-            <span class="pl-k">...</span>
+    "MyOtherCustomResourceName": {
+        "Type": "Custom::AnotherPluginNameSpace",
+        "Properties": {
+            "ServiceToken": "{LAMBDA_ARN}",
+            ...
         }
     }
-}</pre>
+}</code></pre>
             </div>
 
-            <p>See the <a href="https://github.com/carlnordenfelt/lulo/tree/master/example">example</a> for a complete
-                example</p>
+            <p>
+                See the <a href="https://github.com/By-Nordenfelt-AB/lulo/tree/main/example">example</a> for a complete
+                example
+            </p>
 
             <h4>
-                <a id="how-it-works" class="anchor" href="#how-it-works" aria-hidden="true"><span aria-hidden="true"
-                                                                                                  class="octicon octicon-link"></span></a>How
-                it works</h4>
+                <a id="how-it-works" class="anchor" href="#how-it-works" aria-hidden="true">
+                    <span aria-hidden="true" class="octicon octicon-link"></span>
+                </a>
+                How it works
+            </h4>
 
-            <p>When you register a plugin you want to use you give it a name.
-                To invoke the plugin you name your Custom Resource <code>Custom::RegisteredPluginName</code>.</p>
+            <p>
+                When you register a plugin you have to give it a name.
+                To invoke the plugin you reference the plugin name in your CloudFormation template: <code>Custom::RegisteredPluginName</code>.
+            </p>
 
-            <p>Each plugin works in different ways and may yield different types of results that you can interact with
-                in your templates.</p>
+            <p>
+                Each plugin works in different ways and may yield different types of results that you can interact with
+                in your templates. Please refer to the plugin specific documentation for further details.
+            </p>
 
             <p>
                 If you have private plugins that you don't want to publish as npm modules it's perfectly fine to bundle those with your Lambda function
@@ -160,40 +147,53 @@
             </p>
 
             <h2>
-                <a id="why-lulo" class="anchor" href="#why-lulo" aria-hidden="true"><span aria-hidden="true"
-                                                                                          class="octicon octicon-link"></span></a>Why
-                Lulo?</h2>
-
-            <p>Because it's a <a href="https://en.wikipedia.org/wiki/Solanum_quitoense">very healthy fruit</a> :)</p>
-
-            <h2>
-                <a id="license" class="anchor" href="#license" aria-hidden="true"><span aria-hidden="true"
-                                                                                        class="octicon octicon-link"></span></a>License
+                <a id="why-lulo" class="anchor" href="#why-lulo" aria-hidden="true">
+                    <span aria-hidden="true" class="octicon octicon-link"></span>
+                </a>
+                Why Lulo?
             </h2>
 
-            <p><a href="https://github.com/carlnordenfelt/lulo/blob/master/LICENSE">The MIT License (MIT)</a></p>
+            <p>
+                Because it's a <a href="https://en.wikipedia.org/wiki/Solanum_quitoense">very healthy fruit</a> :)
+            </p>
 
             <h2>
-                <a id="change-log" class="anchor" href="#change-log" aria-hidden="true"><span aria-hidden="true"
-                                                                                              class="octicon octicon-link"></span></a>Change
-                Log</h2>
+                <a id="license" class="anchor" href="#license" aria-hidden="true">
+                    <span aria-hidden="true" class="octicon octicon-link"></span>
+                </a>
+                License
+            </h2>
 
-            <p><a href="https://github.com/carlnordenfelt/lulo/blob/master/CHANGELOG.md">Change Log</a></p>
+            <p>
+                <a href="https://github.com/By-Nordenfelt-AB/lulo/blob/main/LICENSE">The MIT License (MIT)</a>
+            </p>
+
+            <h2>
+                <a id="change-log" class="anchor" href="#change-log" aria-hidden="true">
+                    <span aria-hidden="true" class="octicon octicon-link"></span>
+                </a>
+                Change Log
+            </h2>
+
+            <p>
+                <a href="https://github.com/By-Nordenfelt-AB/lulo/blob/main/CHANGELOG.md">Change Log</a>
+            </p>
         </section>
 
         <aside id="sidebar">
             <h3>Installation</h3>
             <code>npm install lulo --save</code>
-            
+
             <h3>Plugins</h3>
             <p>
-                <a href="https://carlnordenfelt.github.io/lulo/plugins.html">Available plugins</a><br>
-                <a href="https://carlnordenfelt.github.io/lulo/writing-plugins.html">Writing plugins</a>
+                <a href="https://By-Nordenfelt-AB.github.io/lulo/plugins.html">Available plugins</a><br>
+                <a href="https://By-Nordenfelt-AB.github.io/lulo/writing-plugins.html">Writing plugins</a>
+                <a href="https://by-nordenfelt-ab.github.io/lulo/migrating-plugins-to-v4.html">Migrating plugins to v4</a>
             </p>
-            
+
             <h3>Documentation</h3>
             <p>
-                <a href="https://carlnordenfelt.github.io/lulo">Documentation</a>
+                <a href="https://By-Nordenfelt-AB.github.io/lulo">Documentation</a>
             </p>
 
             <p class="repo-owner">

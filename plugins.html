@@ -21,7 +21,7 @@
     <div class="inner">
         <h1>Lulo</h1>
         <h2>A plugin engine for AWS CloudFormation Custom Resources</h2>
-        <a href="https://github.com/carlnordenfelt/lulo" class="button">
+        <a href="https://github.com/by-nordenfelt-ab/lulo" class="button">
             <small>View project on</small> GitHub
         </a>
     </div>
@@ -39,7 +39,18 @@
                 All (known) lulo plugins are listed below.
             </p>
             
-            <h3>Cognito</h3>
+            <h3>V4 Compatible</h3>
+            <h4>Other AWS Services</h4>
+            <ul>
+                <li>
+                    <a href="https://www.npmjs.com/package/lulo-plugin-stack-properties">Stack-Properties</a>:
+                    Yields Parameters, Outputs and Resources given another CloudFormation StackId or StackName
+                </li>
+            </ul>
+
+            <h3>Non-V4 Compatible</h3>
+            
+            <h4>Cognito</h4>
             <ul>
                 <li><a href="https://www.npmjs.com/package/lulo-plugin-cognito-identity-pool">Cognito Identity Pool</a>
                     Creates Identity Pools for Amazon Cognito</li>
@@ -55,7 +66,7 @@
                     Creates User Pool Groups</li>
             </ul>
 
-            <h3>Elastic Transcoder</h3>
+            <h4>Elastic Transcoder</h4>
             <ul>
                 <li>
                     <a href="https://www.npmjs.com/package/lulo-plugin-elastictranscoder-pipeline">Elastic Transcoder Pipeline</a>:
@@ -67,7 +78,7 @@
                 </li>
             </ul>
                 
-            <h3>Other AWS Services</h3>
+            <h4>Other AWS Services</h4>
             <ul>
                 <li>
                     <a href="https://www.npmjs.com/package/lulo-plugin-acm-get-certificate">ACM Get Certificate</a>
@@ -99,10 +110,6 @@
                 <li>
                     <a href="https://www.npmjs.com/package/lulo-plugin-sns-platform-application">SNS Platform Application</a>:
                     Create an SNS Platform Application
-                </li>
-                <li>
-                    <a href="https://www.npmjs.com/package/lulo-plugin-stack-properties">Stack-Properties</a>:
-                    Yields Parameters, Outputs and Resources given another CloudFormation StackId or StackName
                 </li>
             </ul>
     
@@ -137,7 +144,7 @@
              <h3>Contribute Plugins</h3>
             <p>
                 Want to contribute with your own plugins?
-                Check out the <a href="https://carlnordenfelt.github.io/lulo/writing-plugins.html">How to write plugins page</a>
+                Check out the <a href="https://By-Nordenfelt-AB.github.io/lulo/writing-plugins.html">How to write plugins page</a>
             </p>
 
             <h4>
@@ -146,7 +153,7 @@
 
             <p>
                 Update
-                <a href="https://github.com/carlnordenfelt/lulo/blob/gh-pages/plugins.html">plugins.html</a>
+                <a href="https://github.com/by-nordenfelt-ab/lulo/blob/gh-pages/plugins.html">plugins.html</a>
                 and submit a pull request to get your plugin listed here.
             </p>
         </section>
@@ -154,16 +161,17 @@
         <aside id="sidebar">
             <h3>Installation</h3>
             <code>npm install lulo --save</code>
-            
+
             <h3>Plugins</h3>
             <p>
-                <a href="https://carlnordenfelt.github.io/lulo/plugins.html">Available plugins</a><br>
-                <a href="https://carlnordenfelt.github.io/lulo/writing-plugins.html">Writing plugins</a>
+                <a href="https://by-nordenfelt-ab.github.io/lulo/plugins.html">Available plugins</a><br>
+                <a href="https://by-nordenfelt-ab.github.io/lulo/writing-plugins.html">Writing plugins</a><br>
+                <a href="https://by-nordenfelt-ab.github.io/lulo/migrating-plugins-to-v4.html">Migrating plugins to v4</a>
             </p>
-            
+
             <h3>Documentation</h3>
             <p>
-                <a href="https://carlnordenfelt.github.io/lulo">Documentation</a>
+                <a href="https://by-nordenfelt-ab.github.io/lulo">Documentation</a>
             </p>
 
             <p class="repo-owner">

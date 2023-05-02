@@ -9,10 +9,6 @@
     <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
     <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print">
 
-    <!--[if lt IE 9]>
-    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
-
     <title>Lulo</title>
 </head>
 
@@ -31,8 +27,10 @@
     <div class="inner clearfix">
         <section id="main-content">
             <h2>
-                <a id="lulo" class="anchor" href="#lulo" aria-hidden="true"><span aria-hidden="true"
-                                                                                  class="octicon octicon-link"></span></a>Writing Plugins
+                <a id="lulo" class="anchor" href="#lulo" aria-hidden="true">
+                    <span aria-hidden="true" class="octicon octicon-link"></span>
+                </a>
+                Writing Plugins
             </h2>
 
             <p>
@@ -42,24 +40,39 @@
                 cases can easily become, well, complex. It comes down to what you want your plugin to do.
             </p>
 
+            <h2>
+                <a id="lulo" class="anchor" href="#lulo" aria-hidden="true">
+                    <span aria-hidden="true" class="octicon octicon-link"></span>
+                </a>
+                Migrating Plugins to V4
+            </h2>
+
+            <p>
+                If you have an existing plugin and need to update it to be v4 compatible, please refer to the
+                <a href="https://by-nordenfelt-ab.github.io/lulo/migrating-plugins-to-v4.html">migration documentation</a>.
+            </p>
+
             <h3>
-                <a id="plugin-api" class="anchor" href="#plugin-api" aria-hidden="true"><span aria-hidden="true"
-                                                                                              class="octicon octicon-link"></span></a>Plugin
-                API</h3>
+                <a id="plugin-api" class="anchor" href="#plugin-api" aria-hidden="true">
+                    <span aria-hidden="true" class="octicon octicon-link"></span>
+                </a>
+                Plugin API
+            </h3>
 
             <p>Each plugin module must export the following properties:</p>
 
-<pre><code>
-    schema; // Optional
-    validate(event); // Required
-    create(event, context, callback);  // Required
-    delete(event, context, callback); // Required
-    update(event, context, callback); // Required
+            <pre><code>schema; // Optional
+async validateEvent(event): void; // Optional (recommended)
+async createResource(event, context): object; // Required
+async deleteResource(event, context): object; // Required
+async updateResource(event, context): object; // Required
 </code></pre>
 
             <h4>
-                <a id="schema" class="anchor" href="#schema" aria-hidden="true"><span aria-hidden="true"
-                                                                                                    class="octicon octicon-link"></span></a>Schema (object)
+                <a id="schema" class="anchor" href="#schema" aria-hidden="true">
+                    <span aria-hidden="true" class="octicon octicon-link"></span>
+                </a>
+                Schema (object)
             </h4>
             <p>
                 Schema is an optional object that can be exported by your plugin.
@@ -84,81 +97,90 @@
             <p>
                 <strong>Note: Schema is not for validation!</strong>
             </p>
+
             <h5>Example</h5>
             <p>
                 This example shows how to flag the different supported types and what the schema is expected to look like.
             </p>
-<pre><code>
-    schema = {
-        BooleanParameter: { type: 'boolean' },
-        IntegerParameter: { type: 'integer' },
-        NumericParameter: { type: 'numeric' },
-        Nested: {
-            type: 'object',
-            schema: {
-                NumericParameter: { type: 'integer' }
-            }
-        },
-        PrimitiveArray: { type: 'array', schema: 'integer' },
-        ComplexArray: {
-            type: 'array',
-            schema: {
-                BooleanParameter: { type: 'boolean' },
-                IntegerParameter: { type: 'integer' },
-                PrimitiveArray: {
-                    type: 'array',
-                    schema: 'boolean'
-                }
+            <pre><code>schema = {
+    BooleanParameter: { type: 'boolean' },
+    IntegerParameter: { type: 'integer' },
+    NumericParameter: { type: 'numeric' },
+    Nested: {
+        type: 'object',
+        schema: {
+            NumericParameter: { type: 'integer' }
+        }
+    },
+    PrimitiveArray: { type: 'array', schema: 'integer' },
+    ComplexArray: {
+        type: 'array',
+        schema: {
+            BooleanParameter: { type: 'boolean' },
+            IntegerParameter: { type: 'integer' },
+            PrimitiveArray: {
+                type: 'array',
+                schema: 'boolean'
             }
         }
-    };
+    }
+};
 </code></pre>
 
             <h4>
-                <a id="validateevent" class="anchor" href="#validateevent" aria-hidden="true"><span aria-hidden="true"
-                                                                                                    class="octicon octicon-link"></span></a>validate(event)
+                <a id="validateevent" class="anchor" href="#validateevent" aria-hidden="true">
+                    <span aria-hidden="true" class="octicon octicon-link"></span>
+                </a>
+                validateEvent(event)
             </h4>
 
-            <p>Validate the incoming event.
-                validate is not expected to return anything but it is expected to
-                <code>throw Error(message)</code> on validation error.</p>
+            <p>
+                Optionally validate the incoming event.
+                Validate is not expected to return anything but it is expected to
+                <code>throw Error(message)</code> on validation error.
+            </p>
+            <p>
+                Validate is not required but highly recommended to catch obvious input errors.
+            </p>
             <p>
                 Validate is not invoked on Delete requests.
             </p>
-            <h4>
-                <a id="createevent-context-callback" class="anchor" href="#createevent-context-callback"
-                   aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>create(event,
-                context, callback)</h4>
-
-            <p>Invoked when the custom resource is created.</p>
 
             <h4>
-                <a id="updateevent-context-callback" class="anchor" href="#updateevent-context-callback"
-                   aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>update(event,
-                context, callback)</h4>
+                <a id="createResource" class="anchor" href="#createResource" aria-hidden="true">
+                    <span aria-hidden="true" class="octicon octicon-link"></span>
+                </a>createResource(event, context): object
+            </h4>
+            <p>Invoked when the resource is created.</p>
 
+            <h4>
+                <a id="updateResource" class="anchor" href="#updateResource" aria-hidden="true">
+                    <span aria-hidden="true" class="octicon octicon-link"></span>
+                </a>updateResource(event, context): object
+            </h4>
             <p>Invoked when the custom resource is updated.</p>
-            <h4>
-                <a id="deleteevent-context-callback" class="anchor" href="#deleteevent-context-callback"
-                   aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>delete(event,
-                context, callback)</h4>
 
+            <h4>
+                <a id="deleteResource" class="anchor" href="#deleteResource" aria-hidden="true">
+                    <span aria-hidden="true" class="octicon octicon-link"></span>
+                </a>
+                deleteResource(event, context): object
+            </h4>
             <p>Invoked when the custom resource is deleted.</p>
 
             <h4>
-                <a id="return-values" class="anchor" href="#return-values" aria-hidden="true"><span aria-hidden="true"
-                                                                                                    class="octicon octicon-link"></span></a>Return
-                values</h4>
-            <p>
-                The callback function follows the standard nodejs pattern:<br/>
-                <code>callback(error, response);</code>
-            </p>
+                <a id="return-values" class="anchor" href="#return-values" aria-hidden="true">
+                    <span aria-hidden="true" class="octicon octicon-link"></span>
+                </a>
+                Return values
+            </h4>
+
             <b>Errors</b>
             <p>
-                If error is passed, the execution will fail and response is ignored.
+                Errors should be thrown by the respective function.
             </p>
 
-            <b>Response</b>
+            <b>Response Data</b>
             <p>
                 The response parameter is optional. If not provided, an empty response will be returned.
             </p>
@@ -166,8 +188,8 @@
                 If provided, the response parameter should be a <em>flat</em> object, keys cannot be nested.
                 If you need to namespace return values from a plugin, use dot.notation in the object keys.
                 These values are referenced using<br/>
-                <code>{ "Fn::GetAtt" ["ResourceName", "ReturnValueKey"] }</code> or
-                <code>{ "Fn::GetAtt" ["DotNotation.ResourceName", "ReturnValueKey"] }</code>
+                <code>!GetAtt 'ResourceName.ReturnValueKey</code> or
+                <code>!GetAtt 'ResourceName.NestedReturnValue.ReturnValueKey'</code>
             </p>
 
             <b>Physical Resource Id</b>
@@ -175,32 +197,40 @@
                 If you want to set the PhysicalResourceId of the CustomResource, set
                 <code>response.physicalResourceId</code> to the value you want.<br/>
                 If you set the physicalResourceId, this value can be referenced directly via <code>{ "Ref": "ResourceName" }</code><br/>
-                If not set it will default to the value of the log group, a non-sensical value that cannot be used as a reference.                
+                If not set it will default to the value of the Lambda invocation logStream, a nonsensical value that cannot be used as a reference.
             </p>
 
             <h3>Lambda Runtimes</h3>
-            <p>Your plugins are expected to run on the supported nodejs Lambda runtimes.</p>
+            <p>Your plugins are expected to run on the supported nodejs Lambda runtimes >= 18.x.</p>
 
             <h3>
-                <a id="document-permissions" class="anchor" href="#document-permissions" aria-hidden="true"><span
-                        aria-hidden="true" class="octicon octicon-link"></span></a>Document permissions</h3>
-
+                <a id="document-permissions" class="anchor" href="#document-permissions" aria-hidden="true">
+                    <span aria-hidden="true" class="octicon octicon-link"></span>
+                </a>
+                IAM permissions
+            </h3>
             <p>Document any additional IAM permissions that your plugin requires.</p>
-            
+
             <h3>
-                <a id="dependencies" class="anchor" href="#dependencies" aria-hidden="true"><span
-                        aria-hidden="true" class="octicon octicon-link"></span></a>Dependencies</h3>
+                <a id="dependencies" class="anchor" href="#dependencies" aria-hidden="true">
+                    <span aria-hidden="true" class="octicon octicon-link"></span>
+                </a>
+                Dependencies
+            </h3>
 
             <p>Do not bundle the aws-sdk, add it to your dev dependencies.</p>
             <p>Keeping the plugins small will decrease the cold start time.</p>
 
             <h3>
-                <a id="list-your-plugin-here" class="anchor" href="#list-your-plugin-here" aria-hidden="true"><span
-                        aria-hidden="true" class="octicon octicon-link"></span></a>List your plugin on the project page</h3>
+                <a id="list-your-plugin-here" class="anchor" href="#list-your-plugin-here" aria-hidden="true">
+                    <span aria-hidden="true" class="octicon octicon-link"></span>
+                </a>
+                List your plugin on the project page
+            </h3>
 
             <p>
                 Update
-                <a href="https://github.com/carlnordenfelt/lulo/blob/gh-pages/plugins.html">plugins.html</a>
+                <a href="https://github.com/by-nordenfelt-ab/lulo/blob/gh-pages/plugins.html">plugins.html</a>
                 and submit a pull request to get your plugin listed on the project page.
             </p>
         </section>
@@ -208,24 +238,28 @@
         <aside id="sidebar">
             <h3>Installation</h3>
             <code>npm install lulo --save</code>
-            
+
             <h3>Plugins</h3>
             <p>
-                <a href="https://carlnordenfelt.github.io/lulo/plugins.html">Available plugins</a><br>
-                <a href="https://carlnordenfelt.github.io/lulo/writing-plugins.html">Writing plugins</a>
+                <a href="https://by-nordenfelt-ab.github.io/lulo/plugins.html">Available plugins</a><br>
+                <a href="https://by-nordenfelt-ab.github.io/lulo/writing-plugins.html">Writing plugins</a><br>
+                <a href="https://by-nordenfelt-ab.github.io/lulo/migrating-plugins-to-v4.html">Migrating plugins to v4</a>
             </p>
-            
+
             <h3>Documentation</h3>
             <p>
-                <a href="https://carlnordenfelt.github.io/lulo">Documentation</a>
+                <a href="https://by-nordenfelt-ab.github.io/lulo">Documentation</a>
             </p>
 
             <p class="repo-owner">
                 Maintained by <a href="https://github.com/carlnordenfelt">carlnordenfelt</a>.
             </p>
 
-            <p>This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the Architect theme
-                by <a href="https://twitter.com/jasonlong">Jason Long</a>.</p>
+            <p>
+                This page was generated by
+                <a href="https://pages.github.com">GitHub Pages</a> using the Architect theme
+                by <a href="https://twitter.com/jasonlong">Jason Long</a>.
+            </p>
         </aside>
     </div>
 </div>
