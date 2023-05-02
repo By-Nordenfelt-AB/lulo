@@ -1,18 +1,19 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: ['AWS::Serverless-2016-10-31']
-Parameters:
-    PackageKey:
-        Type: 'String'
-        Description: 'S3 location of Zip file containing index.js and node_modules'
-    PackageBucket:
-        Type: 'String'
-        Description: 'Bucket Zip file can be found'
-    TargetStackName:
-        Type: 'String'
-        Description: 'Name or ID of the stack you want to describe'
-    ParameterName:
-        Type: 'String'
-        Description: 'Name of the parameter value you want to output from the stack'
+
+Globals:
+    Function:
+        Runtime: 'nodejs18.x'
+        Architectures: ['arm64']
+        MemorySize: 256
+        Timeout: 3
+        CodeUri: '.'
+        Environment:
+            Variables:
+                LOG_LEVEL: 'INFO'
+        Tags:
+            Stack: !Ref 'AWS::StackId'
+
 Resources:
     LuloFunctionRole:
         Type: 'AWS::IAM::Role'
@@ -29,32 +30,35 @@ Resources:
                     PolicyDocument:
                         Version: '2012-10-17'
                         Statement:
-                            -   Sid: 'lulo-plugin-stack-properties'
+                            -   Sid: 'LuloPluginStackProperties'
                                 Action:
                                     - 'cloudformation:DescribeStacks'
-                                    - 'cloudformation:ListStackResources'
+                                    - 'cloudformation:DescribeStackResources'
                                 Effect: 'Allow'
                                 Resource: '*'
             ManagedPolicyArns:
                 - 'arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole'
-    LuloFunction:
-        Type: 'AWS::Lambda::Function'
+
+    LuloExampleFunction:
+        Type: 'AWS::Serverless::Function'
         Properties:
-            FunctionName: 'Lulo'
-            Code:
-                S3Bucket: !Ref 'PackageBucket'
-                S3Key: !Ref 'PackageKey'
-            Handler: 'index.handler'
-            Runtime: 'nodejs12.x'
-            Timeout: 300
+            Handler: '.dist/index.handler'
             Role: !GetAtt 'LuloFunctionRole.Arn'
-    LuloPluginTest:
-        Type: 'Custom::StackProperties'
+
+    LogGroup:
+        Type: 'AWS::Logs::LogGroup'
         Properties:
-            ServiceToken: !GetAtt 'LuloFunction.Arn'
-            StackName: !Ref 'TargetStackName'
+            LogGroupName: !Sub '/aws/lambda/${LuloExampleFunction}'
+            RetentionInDays: 14
+
+    LuloPluginExample:
+        Type: 'Custom::StackProperties'
+        DependsOn: 'LogGroup'
+        Properties:
+            ServiceToken: !GetAtt 'LuloExampleFunction.Arn'
+            StackName: '{ExampleStackName}' # TODO: Change the name of the Stack to the one you want to describe
 
 Outputs:
     ExampleParameter:
-        Value: !GetAtt ['LuloPluginTest', !Sub 'Parameter.${ParameterName}']
-
+        # TODO: Change the name of the Parameter/Resource/Output you want to expose from the Stack
+        Value: !GetAtt 'LuloPluginExample.Parameter.{ExampleParameterName}'

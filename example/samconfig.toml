@@ -1,0 +1,14 @@
+version = 0.1
+[default.package.parameters]
+output_template_file = ".sam-packaged.yaml"
+s3_bucket = "{YOUR_SAM_BUCKET_NAME}"
+s3_prefix = "{YOUR_SAM_BUILD_PREFIX}"
+
+[default.deploy.parameters]
+stack_name = "Lulo-Example"
+template_file = ".sam-packaged.yaml"
+capabilities = "CAPABILITY_NAMED_IAM"
+no_fail_on_empty_changeset = true
+
+s3_bucket = "{YOUR_SAM_BUCKET_NAME}"
+s3_prefix = "{YOUR_SAM_BUILD_PREFIX}"

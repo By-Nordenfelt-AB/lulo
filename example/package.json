@@ -3,15 +3,14 @@
     "version": "0.0.1",
     "scripts": {
         "clean": "rm -rf node_modules && rm -rf *.zip",
-        "lint": "node_modules/.bin/eslint src",
-        "test-unit": "NODE_ENV=TEST node_modules/.bin/istanbul cover --include-all-sources true -i \"src/**/*.js\" node_modules/.bin/_mocha ./tests/unit -- --recursive",
-        "check-coverage": "NODE_ENV=TEST node_modules/.bin/istanbul check-coverage --statement 100 --branches 100 --functions 100 --lines 100",
-        "test": "npm run lint && npm run test-unit && npm run check-coverage",
-        "prepackage": "npm run clean && npm install && npm prune --production",
-        "package": "zip package.zip -r node_modules package.json src"
+        "deploy": "npm i && sam build && sam package && sam deploy"
     },
     "dependencies": {
-        "lulo": "4.0.0-beta1",
-        "lulo-plugin-stack-properties": "*"
+        "lulo": "4.0.0",
+        "lulo-plugin-stack-properties": "4.0.0"
+    },
+    "devDependencies": {
+        "@types/aws-lambda": "^8.10.114",
+        "@types/node": "18.16.0"
     }
 }
