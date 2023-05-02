@@ -62,8 +62,8 @@ async function _respondToCfn(response: { status: string, data: any, reason: stri
     }
 
     try {
-        const httpResponse = await _makeHttpsRequest(options);
-        log.info('Cfn Response', { statusCode: httpResponse.statusCode, body: httpResponse.body });
+        const httpResponse = await _makeHttpsRequest(options, requestBody);
+        log.info('Cfn Response', { statusCode: httpResponse.statusCode });
     } catch (error) {
         log.error('Cfn Request failed', { error });
     }
@@ -78,7 +78,7 @@ function _resolvePhysicalResourceId(data: any, event: CloudFormationCustomResour
     return context.logStreamName;
 }
 
-async function _makeHttpsRequest(options: any, requestBody = null): Promise<{ statusCode?: number, body: string }> {
+async function _makeHttpsRequest(options: any, requestBody: any): Promise<{ statusCode?: number }> {
     return new Promise((resolve, reject) => {
         const req = https.request(options, res => {
             const chunks: string[] = [];
@@ -86,9 +86,9 @@ async function _makeHttpsRequest(options: any, requestBody = null): Promise<{ st
 
             res.on('end', () => {
                 try {
-                    const { statusCode, headers } = res;
+                    const { statusCode } = res;
                     const body = chunks.join('');
-                    resolve({ statusCode, body });
+                    resolve({ statusCode });
                 } catch (e) {
                     reject(e);
                 }
