@@ -63,9 +63,9 @@ async function _respondToCfn(response: { status: string, data: any, reason: stri
 
     try {
         const httpResponse = await _makeHttpsRequest(options);
-        log.info('Cfn Response', { statusCode: httpResponse.statusCode, message: httpResponse.statusMessage });
+        log.info('Cfn Response', { statusCode: httpResponse.statusCode, body: httpResponse.body });
     } catch (error) {
-        log.error('send(..) failed executing https.request(..): ', { error });
+        log.error('Cfn Request failed', { error });
     }
 }
 
@@ -78,31 +78,25 @@ function _resolvePhysicalResourceId(data: any, event: CloudFormationCustomResour
     return context.logStreamName;
 }
 
-async function _makeHttpsRequest(options: any, requestBody = null): Promise<{ statusCode: number, statusMessage: string }> {
+async function _makeHttpsRequest(options: any, requestBody = null): Promise<{ statusCode?: number, body: string }> {
     return new Promise((resolve, reject) => {
-        const req = https.request(options, (res) => {
-            const responseBody: Uint8Array[] = [];
-            res.on('data', (chunk) => {
-                responseBody.push(chunk);
-            });
+        const req = https.request(options, res => {
+            const chunks: string[] = [];
+            res.on('data', chunk => chunks.push(chunk));
+
             res.on('end', () => {
                 try {
-                    const body = JSON.parse(Buffer.concat(responseBody).toString());
-                    resolve(body);
+                    const { statusCode, headers } = res;
+                    const body = chunks.join('');
+                    resolve({ statusCode, body });
                 } catch (e) {
                     reject(e);
                 }
             });
         });
 
-        req.on('error', (error) => {
-            reject(error);
-        });
-
-        if (requestBody) {
-            req.write(requestBody);
-        }
-
+        req.on('error', reject);
+        req.write(requestBody);
         req.end();
     });
 }
